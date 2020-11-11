@@ -59,7 +59,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 
 	# save config
 	before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
-	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)=="str" else before_config_tmp
+	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
 	try:
 		before_config_jsons.update({acc_name: config_data})
 	except:
@@ -70,7 +70,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 def auto_upload_iksm():
 	# auto upload
 	before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
-	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)=="str" else before_config_tmp
+	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
 	for acc_name, v in before_config_jsons.items():
 		if v["api_key"]=="0"*43: # API_KEY is not setted
 			continue
