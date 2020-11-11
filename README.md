@@ -12,7 +12,7 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 以下のstat.inkのAPI KEYやDISCORD BOT TOKENはメモ帳にでもコピーしておいてください。  
 
 - stat.ink : アカウント作成、API KEYコピー
-- Heroku : アカウント作成
+- Heroku : アカウント作成、API KEYコピー
     - URL : https://signup.heroku.com/
 - discord : アカウント作成、DISCORD BOT TOKENコピー、BOTのserverへの追加
     - 参考 [Discord Botアカウント初期設定ガイド for Developer](https://qiita.com/1ntegrale9/items/cb285053f2fa5d0cccdf)のうち**はじめに~サーバーへの登録**
@@ -22,8 +22,15 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 1. アカウントのアイコンマークをクリックし、Account settingsをクリックします。  
 <img with="80%" src="img/heroku_api_ss1.png"/>
 
-2. API Keyの欄に移動し、Revealをクリック。表示されたAPI KEYをメモ帳などにコピーしておきます。  
+2. API Keyの欄でRevealをクリックし、表示されたAPI KEYをメモ帳などにコピーしておきます。  
 <img with="80%" src="img/heroku_api_ss2.png"/>
+
+### stat.ink API KEY取得
+
+1. stat.inkの自分のアカウントをクリックし、「プロフィールと設定」をクリックします。
+2. APIキーの欄で「APIキーを表示」をクリックし、表示されたAPI KEYをメモ帳などにコピーしておきます。
+
+<img with="80%" src="img/statink_apikey.png"/>
 
 ## Bot起動まで
 ### HerokuへDeploy
@@ -39,9 +46,9 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 
 <img with="80%" src="img/heroku_deploy.png"/>
 
-### 環境変数の登録 (Discord bot tokenなど)
+### 環境変数の登録 (API KEY、TOKENなど)
 
-続けて、環境変数としてdiscord bot tokenなどを登録します。  
+続けて、環境変数としてTOKENなどを登録します。  
 1. Setting<img height="20px" src="img/heroku_icon_setting.png"></img> の中のConfig Varsの欄へ。  
 2. Reveal Config Varsをクリックして、環境変数を入力していきます。  
 3. KEYとVALUEを1組入力するごとに`Add`をクリックします。  
