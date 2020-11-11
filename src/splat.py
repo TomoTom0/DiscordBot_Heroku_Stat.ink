@@ -55,6 +55,7 @@ class Splat(commands.Cog):
     async def showIksmAcc(self, ctx: commands.Context):
         """登録されているnintendoアカウント一覧を表示します。"""
         before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
+        print(before_config_tmp)
         before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)=="str" else before_config_tmp
         acc_names = [k for k, v in before_config_jsons.items() ]
         await ctx.channel.send(f"There is {len(acc_names)} accounts.\n----\n"+"\n".join(acc_names))

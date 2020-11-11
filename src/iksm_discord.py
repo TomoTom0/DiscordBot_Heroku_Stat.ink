@@ -72,6 +72,8 @@ def auto_upload_iksm():
 	before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
 	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)=="str" else before_config_tmp
 	for acc_name, v in before_config_jsons.items():
+		if v["api_key"]=="0"*43: # API_KEY is not setted
+			continue
 		# make config from ENV
 		with open(f"{tmp_dir}/config.txt", "w") as f:
 			f.dump(v)
