@@ -19,7 +19,7 @@ def update_env(new_envs={}):
     """環境変数の変更とherokuの環境変数の更新を行う。その後、botは再起動される。"""
     for k, v in new_envs.items():
         os.environ[k]=v
-    app_name=os.getenv("HEROKU_APP_NAME", "app-splat") #HEROKU_APP_NAME
+    app_name=os.getenv("HEROKU_APP_NAME", "bot-splat") #HEROKU_APP_NAME
     if app_name=="":
         print("環境変数のHEROKU_APP_NAMEが定義されていません。")
         return
