@@ -1,6 +1,6 @@
 {
     "name": "discordbot",
-    "description": "stat.inkと連携したdiscord bot",
+    "description": "stat.inkに自動で戦績をアップロードするdiscord botです。",
     "repository": "https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink",
     "keywords": ["python", "discord", "bot"]
   }

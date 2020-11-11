@@ -1,9 +1,6 @@
 # Discord Bot for Stat.ink X Heroku
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦績を自動アップロードするdiscord bot**を作れるようにしたいと考え、このscriptを書きました。
-
-[TOC]
 
 ## 事前準備
 ### サービスへの登録など
@@ -17,7 +14,6 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
     - 参考 [Discord Botアカウント初期設定ガイド for Developer](https://qiita.com/1ntegrale9/items/cb285053f2fa5d0cccdf)のうち**はじめに~サーバーへの登録**
 
 ## Bot起動まで
-
 ### HerokuへDeploy
 1. **あらかじめブラウザまたはアプリのHerokuにログインしておきます。**
 2. ↓このボタンをクリックします。
