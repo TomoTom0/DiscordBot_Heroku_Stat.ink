@@ -1,11 +1,11 @@
 # Discord Bot for Stat.ink X Heroku
 
-PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦績を自動アップロードするdiscord bot**を作れるようにしたいと考え、このscriptを書きました。 
+PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦績を自動アップロードするdiscord bot**を作れるようにしたいと考え、このscriptを書きました。  
 
 ## 事前準備
 ### サービスへの登録など
-無料でやるために、いくつかのサービスを利用します。アカウントをすでに持っているなら、追加で作成する必要はありません。 
-以下のstat.inkのAPI KEYやDISCORD BOT TOKENはメモ帳にでもコピーしておいてください。 
+無料でやるために、いくつかのサービスを利用します。アカウントをすでに持っているなら、追加で作成する必要はありません。  
+以下のstat.inkのAPI KEYやDISCORD BOT TOKENはメモ帳にでもコピーしておいてください。  
 
 - stat.ink : アカウント作成、API KEYコピー
 - Heroku : アカウント作成
@@ -15,32 +15,32 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 
 ### heroku API KEY取得
 
-1. アカウントのアイコンマークをクリックし、Account settingsをクリックします。 
+1. アカウントのアイコンマークをクリックし、Account settingsをクリックします。  
 <img with="80%" src="img/heroku_api_ss1.png"/>
 
-2. API Keyの欄に移動し、Revealをクリック。表示されたAPI KEYをメモ帳などにコピーしておきます。 
+2. API Keyの欄に移動し、Revealをクリック。表示されたAPI KEYをメモ帳などにコピーしておきます。  
 <img with="80%" src="img/heroku_api_ss2.png"/>
 
 ## Bot起動まで
 ### HerokuへDeploy
 1. **あらかじめブラウザまたはアプリのHerokuにログインしておきます。**
-2. ↓このボタンをクリックします。 
+2. ↓このボタンをクリックします。  
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-3. しばらく待機します。画面が切り替わらなければページをリロード。 
+3. しばらく待機します。画面が切り替わらなければページをリロード。  
 4. app-nameに`app-splat`(他の名前でもよい)を入力して
-    - PC : `Deploy app`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。 
-    - スマホ : `Create app`をクリックする。 
+    - PC : `Deploy app`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。  
+    - スマホ : `Create app`をクリックする。  
 
 <img with="80%" src="img/heroku_deploy.png"/>
 
 ### 環境変数の登録 (Discord bot tokenなど)
 
-続けて、環境変数としてdiscord bot tokenなどを登録します。 
-1. Setting<img height="20px" src="img/heroku_icon_setting.png"></img> の中のConfig Varsの欄へ。 
-2. Reveal Config Varsをクリックして、環境変数を入力していきます。 
-3. KEYとVALUEを1組入力するごとに`Add`をクリックします。 
+続けて、環境変数としてdiscord bot tokenなどを登録します。  
+1. Setting<img height="20px" src="img/heroku_icon_setting.png"></img> の中のConfig Varsの欄へ。  
+2. Reveal Config Varsをクリックして、環境変数を入力していきます。  
+3. KEYとVALUEを1組入力するごとに`Add`をクリックします。  
 
 |KEY|VALUE|
 |-|-|
@@ -52,39 +52,39 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 
 ### Botを起動
 
-メニューの欄のResources<img height="20px" src="img/heroku_icon_resource.png"></img>へ。 
-1. 鉛筆マーク<img height="20px" src="img/heroku_icon_pencil.png"></img>をクリックし、バー<img height="20px" src="img/heroku_toggle_off.png"></img>を右にスライドして青く<img height="20px" src="img/heroku_toggle_on.png"></img>なればOK。 
-2. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。 
+メニューの欄のResources<img height="20px" src="img/heroku_icon_resource.png"></img>へ。  
+1. 鉛筆マーク<img height="20px" src="img/heroku_icon_pencil.png"></img>をクリックし、バー<img height="20px" src="img/heroku_toggle_off.png"></img>を右にスライドして青く<img height="20px" src="img/heroku_toggle_on.png"></img>なればOK。  
+2. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。  
 
-Botのいるサーバーで`?help`と入力してBotから反応があれば起動完了です。 
+Botのいるサーバーで`?help`と入力してBotから反応があれば起動完了です。  
 <img with="80%" src="img/discord_help.png"/>
 
 ## Botの使い方
 
 ### botへのアカウントの登録 (startIksm, iksm_ession取得)
 `?startIksm <STATINK_API_KEY>`
-1. stat.inkのAPI KEYを用意しておきます。 
-2. botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。 
+1. stat.inkのAPI KEYを用意しておきます。  
+2. botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。  
 (**botと同じサーバーに加入していれば、アカウントの設定にもよりますが、そのbotとDMを行うことが可能です。**)
 
 > ※注意
 **API KEYやTOKENなどと呼ばれるものは、すべてアカウント名とパスワードのセットと等価です。他人にばれることはとても危険なことです。**
-家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、できるだけbotとのDMで`?startIksm`は行ってください。 
+家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、できるだけbotとのDMで`?startIksm`は行ってください。  
 
-3. すると、botからURLが送られてくるのでそのリンクをタップします。 
+3. すると、botからURLが送られてくるのでそのリンクをタップします。  
 <img with="80%" src="img/discord_startIksm.png"/>
 4. リンク先でログインすると、連携アカウントの選択画面になるので、
 **「この人にする」を右クリック(スマホなら長押し)して、リンク先のURLをコピーします。**
 <img with="80%" src="img/nintendo_select.png"/>
 
-5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。 
+5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。  
 <img with="80%" src="img/discord_startIksm2.png"/>
 
 ここまでできれば、戦績の定期アップロードは自動で15分ごとに行われます。(毎時00/15/30/45分です。)
-お疲れ様です。 
+お疲れ様です。  
 
 ### 各種コマンド
-`?help Splat`とBotに入力することでも確認できます。 
+`?help Splat`とBotに入力することでも確認できます。  
 
 |コマンド|引数|説明|
 |-|-|-|
@@ -96,42 +96,42 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 
 ## Botがうまく動かない
 
-よく分からないかもしれませんが、logを確認しましょう。 
-Herokuを開いて、Open appの横のMore->view logsをクリック。 
+よく分からないかもしれませんが、logを確認しましょう。  
+Herokuを開いて、Open appの横のMore->view logsをクリック。  
 
 <img height="300px" src="img/heroku_menu_more.png"/>
 
 ## 適当な解説
 
 ### 戦績保存アプリ
-Splatoon2の戦績は公式のNintendo Onlineアプリから確認できますが、最新の50戦以外は確認できず統計的な利用もできません。 
+Splatoon2の戦績は公式のNintendo Onlineアプリから確認できますが、最新の50戦以外は確認できず統計的な利用もできません。  
 その戦績データを外部に保存しようという試みはいくつかあります。(stat.ink, ikaWidget2, ikaLogなど)
-しかしそれらに自動で定期的に戦績をアップロードする機能は含まれておらず、アップロードする前に50戦してしまうと、その間の戦績が失われてしまいます。 
+しかしそれらに自動で定期的に戦績をアップロードする機能は含まれておらず、アップロードする前に50戦してしまうと、その間の戦績が失われてしまいます。  
 
 ### splatnet2statink
 
-splatnet2statinkは戦績をstat.inkに自動でアップロードしてくれるPythonファイルです。 
-これを定期的に実行することができれば、問題はほとんど解決です。 
+splatnet2statinkは戦績をstat.inkに自動でアップロードしてくれるPythonファイルです。  
+これを定期的に実行することができれば、問題はほとんど解決です。  
 しかし、無料でオンラインでプログラムを実行し続けることなんてできるのでしょうか?
 
 ### Heroku
 
 できます。無料のものに限ってもGCPやHerokuなどの選択肢があるのですが、
-今回はPC初心者向けということでHerokuを選びました。 
+今回はPC初心者向けということでHerokuを選びました。  
 HerokuならPCなしでもできます。(大学生以上の方などでLinuxに嫌悪感がないなら、GCPの方が使い勝手はいいです。)
 
 ### iksm_session
 
-では、最後の関門です。 
-Splatoon2のデータを取り扱うには、はじめにiksm_session(イカスミsession)と呼ばれる文字列を取得する必要があります。 
+では、最後の関門です。  
+Splatoon2のデータを取り扱うには、はじめにiksm_session(イカスミsession)と呼ばれる文字列を取得する必要があります。  
 これはPCでbash系、あるいはPowerShellなどを動かせるなら大した問題ではないのですが、
-不慣れな人にとっては十分に大きな問題でしょう。 
+不慣れな人にとっては十分に大きな問題でしょう。  
 
-そこで、今回のdiscord botではこれも解決しました。 
+そこで、今回のdiscord botではこれも解決しました。  
 discord botとのchatでどうにかできます。(詳しくは使い方を参照。)
 
 ## Botを自分好みに改造したくなったら
-[Discord Bot 最速チュートリアル【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)を参考にしてください。 
+[Discord Bot 最速チュートリアル【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)を参考にしてください。  
 
 ## Reference
 - [Discord Bot 最速チュートリアル【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)
