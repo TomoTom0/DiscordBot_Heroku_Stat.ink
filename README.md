@@ -21,9 +21,11 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 3. しばらく待機します。画面が切り替わらなければページをリロード。
-4. app-nameに`discordbot-statink-heroku`(他の名前でもよい)を入力して
+4. app-nameに`app-splat`(他の名前でもよい)を入力して
     - PC : `Deploy app`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。
     - スマホ : `Create app`をクリックする。
+
+<img with="80%" src="img/heroku_deploy.png"/>
 
 ### 環境変数の登録 (Discord bot tokenなど)
 
@@ -35,7 +37,8 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 |KEY|VALUE|
 |-|-|
 |DISCORD_BOT_TOKEN|コピーしておいたDISCORD BOT TOKEN|
-|HEROKU_APP_NAME|HEROKUのapp-name。デフォルトのままなら`discordbot-statink-heroku`|
+|HEROKU_APP_NAME|HEROKUのapp-name。デフォルトのままなら`app-splat`|
+<img with="80%" src="img/heroku_env.png"/>
 
 ### Botを起動
 
@@ -58,12 +61,14 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、できるだけbotとのDMで`?startIksm`は行ってください。
 
 3. すると、botからURLが送られてくるのでそのリンクをタップします。
-4. リンク先でログインすると、**連携アカウントの選択**画面になるので、
+4. リンク先でログインすると、連携アカウントの選択画面になるので、
 **「この人にする」を右クリック(スマホなら長押し)して、リンク先のURLをコピーします。**
+<img with="80%" src="img/nintendo_select.png"/>
+
 5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。
 6. 念のために`?showIksmAcc`と入力して、botに登録されているアカウントの一覧を確認しておきましょう。
 
-ここまでできれば、戦績の定期アップロードは自動で15分ごとに行われます。(毎時00,15,30,45分です。)
+ここまでできれば、戦績の定期アップロードは自動で15分ごとに行われます。(毎時00/15/30/45分です。)
 お疲れ様です。
 
 ### 各種コマンド
