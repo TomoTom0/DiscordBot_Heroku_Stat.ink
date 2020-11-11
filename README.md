@@ -46,7 +46,7 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 |-|-|
 |DISCORD_BOT_TOKEN|コピーしておいたDISCORD BOT TOKEN|
 |HEROKU_APP_NAME|HEROKUのapp-name。デフォルトのままなら`app-splat`|
-|HEROKU_API|コピーしておいたHEROKUのAPI KEY|
+|HEROKU_APIKEY|コピーしておいたHEROKUのAPI KEY|
 
 <img with="80%" src="img/heroku_env.png"/>
 

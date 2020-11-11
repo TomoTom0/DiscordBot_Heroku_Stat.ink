@@ -24,7 +24,7 @@ def update_env(new_envs={}):
         print("環境変数のHEROKU_APP_NAMEが定義されていません。")
         return
     patch_url = f"https://api.heroku.com/apps/{app_name}/config-vars"
-    headers= {"Authorization": f"Bearer {os.getenv('HEROKU_API')}",
+    headers= {"Authorization": f"Bearer {os.getenv('HEROKU_APIKEY')}",
         "Content-Type":"application/json",
         "Accept":"application/vnd.heroku+json; version=3"}
     res=requests.patch(patch_url, headers=headers, json=new_envs)
