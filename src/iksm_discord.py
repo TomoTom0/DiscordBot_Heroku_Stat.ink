@@ -11,6 +11,7 @@ sys.path.append(f"{os.path.dirname(__file__)}/../splatnet2statink")
 from iksm import call_flapg_api, get_session_token
 import discord
 from discord.ext import commands
+import asyncio
 
 import basic
 splat_path=basic.const_paths["splat_dir"]
@@ -26,7 +27,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 	try:
 		post_login, auth_code_verifier = log_in_discord(A_VERSION, ctx.channel)
 	except Exception as e:
-		ctx.channel.send(f"Error occured : {e}\nTry again from '?startIksm'")
+		ctx.channel.send(f"エラーが発生しました。{e}\nもう一度「?startIksm <API KEY>」からやり直してください。")
 		return
 	print_content=f"リンクをクリックしてログインし, 「この人にする」ボタンを長押し(PCなら右クリック)してリンク先のURLをコピーします\
 		\n**注意: ボタンをそのままクリックするのではありません。**"
@@ -37,7 +38,12 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 			await ctx.channel.send("URLをペーストしてください。キャンセルする場合は「cancel」と入力してください。")
 			def check_url(msg):
 				return msg.author.id==ctx.message.author.id and (msg.content.startswith("npf71b963c1b7b6d119://") or msg.content == "cancel")
-			input_url = await ctx.bot.wait_for("message", check=check_url, timeout=180)
+			try:
+				input_url = await ctx.bot.wait_for("message", check=check_url, timeout=600)
+			except asyncio.TimeoutError:
+				await ctx.channel.send("Timeoutです。もう一度「?startIksm <API KEY>」からやり直してください。")
+				return
+
 			if input_url.content == "cancel":
 				await ctx.channel.send("Canceled.")
 				return

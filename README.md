@@ -47,6 +47,7 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 2. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。
 
 Botのいるサーバーで`?help`と入力してBotから反応があれば起動完了です。
+<img with="80%" src="img/discord_help.png"/>
 
 ## Botの使い方
 
@@ -61,6 +62,7 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、できるだけbotとのDMで`?startIksm`は行ってください。
 
 3. すると、botからURLが送られてくるのでそのリンクをタップします。
+<img with="80%" src="img/discord_startIksm.png"/>
 4. リンク先でログインすると、連携アカウントの選択画面になるので、
 **「この人にする」を右クリック(スマホなら長押し)して、リンク先のURLをコピーします。**
 <img with="80%" src="img/nintendo_select.png"/>
