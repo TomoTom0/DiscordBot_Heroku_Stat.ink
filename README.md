@@ -1,4 +1,5 @@
 # Discord Bot for Stat.ink X Heroku
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦績を自動アップロードするdiscord bot**を作れるようにしたいと考え、このscriptを書きました。
 
@@ -20,27 +21,31 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 ### HerokuへDeploy
 1. **あらかじめブラウザまたはアプリのHerokuにログインしておきます。**
 2. ↓このボタンをクリックします。
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 3. しばらく待機します。画面が切り替わらなければページをリロード。
 4. app-nameに`discordbot-statink-heroku`(他の名前でもよい)を入力して
-    - PC : `Deploy`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。
+    - PC : `Deploy app`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。
     - スマホ : `Create app`をクリックする。
 
 ### 環境変数の登録 (Discord bot tokenなど)
 
 続けて、環境変数としてdiscord bot tokenなどを登録します。
-1. Settingの中のConfig Varsの欄へ。
+1. Setting<img height="20px" src="img/heroku_icon_setting.png"></img> の中のConfig Varsの欄へ。
 2. Reveal Config Varsをクリックして、環境変数を入力していきます。
 3. KEYとVALUEを1組入力するごとに`Add`をクリックします。
+
 |KEY|VALUE|
+|-|-|
 |DISCORD_BOT_TOKEN|コピーしておいたDISCORD BOT TOKEN|
 |HEROKU_APP_NAME|HEROKUのapp-name。デフォルトのままなら`discordbot-statink-heroku`|
 
 ### Botを起動
 
-最後にResourcesの中のDyno管理画面へ。
-1. 鉛筆マークをクリックし、バーが右にスライドして青くできればOK。
-3. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。
+メニューの欄のResources<img height="20px" src="img/heroku_icon_resource.png"></img>へ。
+1. 鉛筆マーク<img height="20px" src="img/heroku_icon_pencil.png"></img>をクリックし、バー<img height="20px" src="img/heroku_toggle_off.png"></img>を右にスライドして青く<img height="20px" src="img/heroku_toggle_on.png"></img>なればOK。
+2. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。
 
 Botのいるサーバーで`?help`と入力してBotから反応があれば起動完了です。
 
@@ -60,7 +65,6 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 4. リンク先でログインすると、**連携アカウントの選択**画面になるので、
 **「この人にする」を右クリック(スマホなら長押し)して、リンク先のURLをコピーします。**
 5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。
-
 6. 念のために`?showIksmAcc`と入力して、botに登録されているアカウントの一覧を確認しておきましょう。
 
 ここまでできれば、戦績の定期アップロードは自動で15分ごとに行われます。(毎時00,15,30,45分です。)
@@ -71,16 +75,18 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 
 |コマンド|引数|説明|
 |-|-|-|
-|?startIksm|STAT_INK_API_KEY| 新たにiksm_sessionを取得し、config.txtを作成します。 stat.inkの登録を完了し、API KEYを取得しておいてください。|
-|?checkIksmSession|acc_name|指定されたアカウントのiksm_sessionを表示します。|
-|?changeAPI|acc_name, API_KEY|指定されたアカウントのstat.inkのAPI KEYを変更します。|
-|?rmIksm|acc_name|指定されたアカウントの情報を削除します。|
-|?showIksmAcc|なし|登録されているnintendoアカウント一覧を表示します。|
+|`?startIksm`|STAT_INK_API_KEY| 新たにiksm_sessionを取得し、botにアカウントを登録します。 事前にstat.inkの登録を完了し、API KEYを取得しておいてください。|
+|`?checkIksmSession`|acc_name|指定されたアカウントのiksm_sessionを表示します。|
+|`?changeAPI`|acc_name, NEW_API_KEY|指定されたアカウントのstat.inkのAPI KEYを変更します。|
+|`?rmIksm`|acc_name|指定されたアカウントの情報を削除します。|
+|`?showIksmAcc`|なし|登録されているnintendoアカウント一覧を表示します。|
 
 ## Botがうまく動かない
 
 よく分からないかもしれませんが、logを確認しましょう。
 Herokuを開いて、Open appの横のMore->view logsをクリック。
+
+<img height="300px" src="img/heroku_menu_more.png"/>
 
 ## 適当な解説
 

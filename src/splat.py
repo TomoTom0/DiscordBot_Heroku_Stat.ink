@@ -16,11 +16,11 @@ class Splat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(description="あらかじめstat.inkのアカウントを用意し、API KEYを用意しておいてください。", pass_context=True)
+    @commands.command(description="", pass_context=True)
     async def startIksm(self, ctx: commands.Context, STAT_INK_API_KEY="0"*43):
-        """新たにiksm_sessionを取得し、config.txtを作成します。\nstat.inkの登録を完了し、API KEYを取得しておいてください。"""
+        """新たにiksm_sessionを取得し、botにアカウントを登録します。\nstat.inkの登録を完了し、API KEYを取得しておいてください。"""
         await iksm_discord.make_config_discord(STAT_INK_API_KEY, conifg_dir, ctx)
-        await ctx.channel.send(f"アカウントは登録され、新たにconfig.txtが作られました。\nこの後botは再起動されます。次の操作はしばらくお待ちください。")
+        await ctx.channel.send(f"新たにアカウントが登録されました。\nこの後botは再起動されます。次の操作はしばらくお待ちください。")
 
     @commands.command(description="", pass_context=True)
     async def checkIksmSession(self, ctx: commands.Context, acc_name):
