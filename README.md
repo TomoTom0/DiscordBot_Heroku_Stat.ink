@@ -65,7 +65,7 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 
 ## Botの使い方
 
-### botへのアカウントの登録 (startIksm, iksm_ession取得)
+### BotへのNintendoアカウント登録
 `?startIksm <STATINK_API_KEY>`
 1. stat.inkのAPI KEYを用意しておきます。  
 2. botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。  
