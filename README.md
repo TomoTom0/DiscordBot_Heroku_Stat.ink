@@ -50,8 +50,8 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 
 続けて、環境変数としてTOKENなどを登録します。  
 1. Setting<img height="20px" src="img/heroku_icon_setting.png"></img> の中のConfig Varsの欄へ。  
-2. Reveal Config Varsをクリックして、環境変数を入力していきます。  
-3. KEYとVALUEを1組入力するごとに`Add`をクリックします。  
+2. Reveal Config Varsをクリックして、以下の環境変数を入力していきます。  
+   KEYとVALUEを1組入力するごとに`Add`をクリックします。  
 
 |KEY|VALUE|
 |-|-|
