@@ -25,7 +25,7 @@ class Splat(commands.Cog):
     @commands.command(description="", pass_context=True)
     async def checkIksmSession(self, ctx: commands.Context, acc_name):
         """指定されたアカウントのiksm_sessionを表示します。"""
-        before_config_jsons=eval(json.loads(os.getenv("iksm_configs", "{}")))
+        before_config_jsons=json.loads(os.getenv("iksm_configs", "{}"))
         json_file=before_config_jsons[acc_name]
         await ctx.channel.send(f"{acc_name}'s iksm_session is\n----\n")
         await ctx.channel.send(json_file["session_token"])
@@ -33,7 +33,7 @@ class Splat(commands.Cog):
     @commands.command(description="", pass_context=True)
     async def changeAPI(self, ctx: commands.Context, acc_name, NEW_API_KEY):
         """指定されたアカウントのstat.inkのAPI KEYを変更します。"""
-        before_config_jsons=eval(json.loads(os.getenv("iksm_configs", "{}")))
+        before_config_jsons=json.loads(os.getenv("iksm_configs", "{}"))
         new_config_jsons={acc: conf if acc!=acc_name
             else {k: v if k!="API_KEY" else NEW_API_KEY for k,v in conf.items()}
             for acc, conf in before_config_jsons.items()}
@@ -43,7 +43,7 @@ class Splat(commands.Cog):
     @commands.command(description="", pass_context=True)
     async def rmIksm(self, ctx: commands.Context, acc_name):
         """指定されたアカウントの情報を削除します。"""
-        before_config_jsons=eval(json.loads(os.getenv("iksm_configs", "{}")))
+        before_config_jsons=json.loads(os.getenv("iksm_configs", "{}"))
         json_files={k:v for k, v in before_config_jsons.items() if k!=acc_name}
         basic.update_env({"iksm_configs":json.dumps(json_files)})
         await ctx.channel.send("Removed.")
@@ -51,7 +51,7 @@ class Splat(commands.Cog):
     @commands.command(description="", pass_context=True)
     async def showIksmAcc(self, ctx: commands.Context):
         """登録されているnintendoアカウント一覧を表示します。"""
-        before_config_jsons=eval(json.loads(os.getenv("iksm_configs", "{}")))
+        before_config_jsons=json.loads(os.getenv("iksm_configs", "{}"))
         acc_names = [k for k, v in before_config_jsons.items() ]
         await ctx.channel.send(f"There is {len(acc_names)} accounts.\n----\n"+"\n".join(acc_names))
 
