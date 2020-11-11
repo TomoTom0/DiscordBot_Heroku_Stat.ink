@@ -13,6 +13,14 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 - discord : アカウント作成、DISCORD BOT TOKENコピー、BOTのserverへの追加
     - 参考 [Discord Botアカウント初期設定ガイド for Developer](https://qiita.com/1ntegrale9/items/cb285053f2fa5d0cccdf)のうち**はじめに~サーバーへの登録**
 
+### heroku API KEY取得
+
+1. アカウントのアイコンマークをクリックし、Account settingsをクリックします。
+<img with="80%" src="img/heroku_api_ss1.png"/>
+
+2. API Keyの欄に移動し、Revealをクリック。表示されたAPI KEYをメモ帳などにコピーしておきます。
+<img with="80%" src="img/heroku_api_ss2.png"/>
+
 ## Bot起動まで
 ### HerokuへDeploy
 1. **あらかじめブラウザまたはアプリのHerokuにログインしておきます。**
@@ -38,6 +46,8 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 |-|-|
 |DISCORD_BOT_TOKEN|コピーしておいたDISCORD BOT TOKEN|
 |HEROKU_APP_NAME|HEROKUのapp-name。デフォルトのままなら`app-splat`|
+|HEROKU_API|コピーしておいたHEROKUのAPI KEY|
+
 <img with="80%" src="img/heroku_env.png"/>
 
 ### Botを起動

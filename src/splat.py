@@ -37,7 +37,7 @@ class Splat(commands.Cog):
         before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
         before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)=="str" else before_config_tmp
         new_config_jsons={acc: conf if acc!=acc_name
-            else {k: v if k!="API_KEY" else NEW_API_KEY for k,v in conf.items()}
+            else {k: v if k!="api_key" else NEW_API_KEY for k,v in conf.items()}
             for acc, conf in before_config_jsons.items()}
         basic.update_env({"iksm_configs":json.dumps(new_config_jsons)})
         await ctx.channel.send(f"{acc_name}'s API_KEY is updated.")
@@ -48,7 +48,7 @@ class Splat(commands.Cog):
         before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
         before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)=="str" else before_config_tmp
         json_files={k:v for k, v in before_config_jsons.items() if k!=acc_name}
-        basic.update_env({"iksm_configs":json.dumps(json_files)})
+        res=basic.update_env({"iksm_configs":json.dumps(json_files)})
         await ctx.channel.send("Removed.")
 
     @commands.command(description="", pass_context=True)

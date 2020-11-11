@@ -1,6 +1,6 @@
 {
     "name": "discordbot",
-    "description": "stat.inkに自動で戦績をアップロードするdiscord botです。app-nameは「bot_splat」が推奨です。",
+    "description": "stat.inkに自動で戦績をアップロードするdiscord botです。app-nameは「app_splat」が推奨です。",
     "repository": "https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink",
     "keywords": ["python", "discord", "bot"]
   }
