@@ -7,7 +7,7 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 ## 事前準備
 ### サービスへの登録など
 無料でやるために、いくつかのサービスを利用します。アカウントをすでに持っているなら、追加で作成する必要はありません。
-ひとまずstat.inkのAPI KEYやDISCORD BOT TOKENはメモ帳にでもコピーしておいてください。
+以下のstat.inkのAPI KEYやDISCORD BOT TOKENはメモ帳にでもコピーしておいてください。
 
 - stat.ink : アカウント作成、API KEYコピー
 - Heroku : アカウント作成
@@ -18,22 +18,20 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 ## Bot起動まで
 
 ### HerokuへDeploy
-**あらかじめブラウザまたはアプリのHerokuにログインしておきます。**
-↓このボタンをクリックします。
+1. **あらかじめブラウザまたはアプリのHerokuにログインしておきます。**
+2. ↓このボタンをクリックします。
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+3. しばらく待機します。画面が切り替わらなければページをリロード。
+4. app-nameに`discordbot-statink-heroku`(他の名前でもよい)を入力して
+    - PC : `Deploy`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。
+    - スマホ : `Create app`をクリックする。
 
-しばらく待機します。画面が切り替わらなければページをリロード。
-
-app-nameに`discordbot-statink-heroku`(他の名前でもよい)を入力して
-- PC : `Deploy`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリックして次の項目へ。
-- スマホ : `Create app`をクリックする。
 ### 環境変数の登録 (Discord bot tokenなど)
 
 続けて、環境変数としてdiscord bot tokenなどを登録します。
-Settingの中のConfig Varsの欄へ。
-Reveal Config Varsをクリックしてから、環境変数を入力していきます。
-KEYとVALUEを1組入力するごとに`Add`をクリックします。
-
+1. Settingの中のConfig Varsの欄へ。
+2. Reveal Config Varsをクリックして、環境変数を入力していきます。
+3. KEYとVALUEを1組入力するごとに`Add`をクリックします。
 |KEY|VALUE|
 |DISCORD_BOT_TOKEN|コピーしておいたDISCORD BOT TOKEN|
 |HEROKU_APP_NAME|HEROKUのapp-name。デフォルトのままなら`discordbot-statink-heroku`|
@@ -41,8 +39,8 @@ KEYとVALUEを1組入力するごとに`Add`をクリックします。
 ### Botを起動
 
 最後にResourcesの中のDyno管理画面へ。
-鉛筆マークをクリックし、バーが右にスライドして青くできればOK。
-`Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。
+1. 鉛筆マークをクリックし、バーが右にスライドして青くできればOK。
+3. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。
 
 Botのいるサーバーで`?help`と入力してBotから反応があれば起動完了です。
 
@@ -50,20 +48,20 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 
 ### botへのアカウントの登録 (startIksm, iksm_ession取得)
 `?startIksm <STATINK_API_KEY>`
-stat.inkのAPI KEYを用意しておきます。
-botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。
+1. stat.inkのAPI KEYを用意しておきます。
+2. botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。
 (**botと同じサーバーに加入していれば、アカウントの設定にもよりますが、そのbotとDMを行うことが可能です。**)
 
 > ※注意
 **API KEYやTOKENなどと呼ばれるものは、すべてアカウント名とパスワードのセットと等価です。他人にばれることはとても危険なことです。**
 家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、できるだけbotとのDMで`?startIksm`は行ってください。
 
-すると、botからURLが送られてくるのでそのリンクをタップします。
-リンク先でログインすると、**連携アカウントの選択**画面になるので、
+3. すると、botからURLが送られてくるのでそのリンクをタップします。
+4. リンク先でログインすると、**連携アカウントの選択**画面になるので、
 **「この人にする」を右クリック(スマホなら長押し)して、リンク先のURLをコピーします。**
-discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。
+5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。
 
-念のために`?showIksmAcc`と入力して、botに登録されているアカウントの一覧を確認しておきましょう。
+6. 念のために`?showIksmAcc`と入力して、botに登録されているアカウントの一覧を確認しておきましょう。
 
 ここまでできれば、戦績の定期アップロードは自動で15分ごとに行われます。(毎時00,15,30,45分です。)
 お疲れ様です。
