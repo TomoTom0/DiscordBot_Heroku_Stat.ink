@@ -58,7 +58,8 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 	config_data = {"api_key": API_KEY, "cookie": new_cookie, "user_lang": USER_LANG, "session_token": new_token}
 
 	# save config
-	before_config_jsons=json.loads(os.getenv("iksm_configs", "{}"))
+	before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
+	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)=="str" else before_config_tmp
 	try:
 		before_config_jsons.update({acc_name: config_data})
 	except:
