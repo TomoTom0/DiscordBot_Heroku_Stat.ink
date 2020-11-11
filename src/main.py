@@ -13,9 +13,9 @@ import iksm_discord
 TOKEN = basic.DISCORD_TOKENS["0"]
 startup_extensions = ["splat"]  # cogの導入
 
-description = ("stat.inkへのアップロードを行います。\
+description = ("stat.inkへ戦績自動アップロードを行うbotです。\
 \nまずはstat.inkのAPI KEYを用意してください。\
-\n詳しい使い方はこちら -> GitHubURL")
+\n詳しい使い方はこちら -> https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink")
 
 bot = commands.Bot(command_prefix='?', description=description)
 
