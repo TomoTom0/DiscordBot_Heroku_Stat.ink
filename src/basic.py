@@ -19,12 +19,12 @@ def update_env(new_envs={}):
     """環境変数の変更とherokuの環境変数の更新を行います。その後、botは再起動されます。"""
     for k, v in new_envs.items():
         os.environ[k]=v
-    app_name=os.getenv("HEROKU_APP_NAME", "app-splat") #HEROKU_APP_NAME
-    if app_name=="":
-        print("環境変数のHEROKU_APP_NAMEが定義されていません。")
-        return
+    app_name=os.getenv("HEROKU_APP_NAME", "app-splat") #HEROKU_APP_NAME, set default value
+    #if app_name=="":
+    #    print("環境変数のHEROKU_APP_NAMEが定義されていません。")
+    #    return
     patch_url = f"https://api.heroku.com/apps/{app_name}/config-vars"
-    headers= {"Authorization": f"Bearer {os.getenv('HEROKU_APIKEY')}",
+    headers= {"Authorization": f"Bearer {os.environ['HEROKU_APIKEY']}",
         "Content-Type":"application/json",
         "Accept":"application/vnd.heroku+json; version=3"}
     res=requests.patch(patch_url, headers=headers, json=new_envs)

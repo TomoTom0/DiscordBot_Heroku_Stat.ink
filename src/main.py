@@ -15,17 +15,15 @@ startup_extensions = ["splat"]  # cogの導入
 
 description = ("stat.inkへ戦績自動アップロードを行うbotです。\
 \nまずはstat.inkのAPI KEYを用意してください。\
+\nまた、あらかじめHerokuのAPI KEYとapp-nameを環境変数として入力しておいてください。\
 \n詳しい使い方はこちら -> https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink")
 
-bot = commands.Bot(command_prefix='?', description=description)
+bot = commands.Bot(command_prefix="?", description=description)
 
 # 起動時に動作する処理
 @bot.event
 async def on_ready():
-    print('Logged in as')
-    print(bot.user.name)
-    print(bot.user.id)
-    print('------')
+    print(f"Logged in as\n{bot.user.name}\n{bot.user.id}\n------")
 
     config_path=f"{basic.const_paths['tmp_dir']}/config.txt"
     if not os.path.isfile(config_path):

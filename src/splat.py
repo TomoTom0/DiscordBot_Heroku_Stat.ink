@@ -17,8 +17,15 @@ class Splat(commands.Cog):
         self.bot = bot
 
     @commands.command(description="", pass_context=True)
-    async def startIksm(self, ctx: commands.Context, STAT_INK_API_KEY="0"*43):
+    async def startIksm(self, ctx: commands.Context, STAT_INK_API_KEY=""):
         """新たにiksm_sessionを取得し、botにアカウントを登録します。\nstat.inkの登録を完了し、API KEYを取得しておいてください。"""
+        # 各種API KEYの入力確認
+        if (len(STAT_INK_API_KEY)!=43):
+            await ctx.channel.send("引数としてstat.inkのAPI KEYが入力されていない、または入力に不備があります。")
+            return
+        if (os.getenv("HEROKU_APIKEY", "")==""):
+            await ctx.channel.send("Herokuの環境変数としてHerokuのAPI KEYが入力されていません。")
+            return
         await iksm_discord.make_config_discord(STAT_INK_API_KEY, conifg_dir, ctx)
         await ctx.channel.send(f"新たにアカウントが登録されました。\nこの後botは再起動されます。次の操作はしばらくお待ちください。")
 
