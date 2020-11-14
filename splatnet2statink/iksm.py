@@ -1,7 +1,5 @@
 # eli fessler
 # clovervidia
-from __future__ import print_function
-from builtins import input
 import requests, json, re, sys
 import os, base64, hashlib
 import uuid, time, random, string
@@ -11,7 +9,7 @@ session = requests.Session()
 version = "unknown"
 
 # ----------- change config_path ------------
-config_path="/tmp/config.txt" if os.getenv("DYNO", False) else f"{os.path.dirname(__file__)}/../tmp/config.txt"
+config_path="/tmp/config.txt" if os.getenv("DYNO", False) else f"{os.path.dirname(__file__)}/../configs/config.txt"
 
 # ----------- original config_path ----------
 # place config.txt in same directory as script (bundled or not)

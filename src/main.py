@@ -13,10 +13,9 @@ import iksm_discord
 TOKEN = basic.DISCORD_TOKENS["0"]
 startup_extensions = ["splat"]  # cogの導入
 
-description = ("stat.inkへ戦績自動アップロードを行うbotです。\
-\nまずはstat.inkのAPI KEYを用意してください。\
-\nまた、あらかじめHerokuのAPI KEYとapp-nameを環境変数として入力しておいてください。\
-\n詳しい使い方はこちら -> https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink")
+description = f"stat.inkへ戦績自動アップロードを行うbotです。\nまずはstat.inkのAPI KEYを用意してください。"+\
+'\nHerokuのAPI KEYとapp-nameを環境変数として入力しておいてください。' if os.getenv('DYNO', False) else '' +\
+"\n詳しい使い方はこちら -> https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink"
 
 bot = commands.Bot(command_prefix="?", description=description)
 
@@ -25,7 +24,7 @@ bot = commands.Bot(command_prefix="?", description=description)
 async def on_ready():
     print(f"Logged in as\n{bot.user.name}\n{bot.user.id}\n------")
 
-    config_path=f"{basic.const_paths['tmp_dir']}/config.txt"
+    config_path=f"{basic.const_paths['tmp_dir' if os.getenv('DYNO', False) else 'splat_dir']}/config.txt"
     if not os.path.isfile(config_path):
         with open(config_path, "w") as f:
             f.write(json.dumps({}))

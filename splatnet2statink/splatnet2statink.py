@@ -3,13 +3,7 @@
 
 # eli fessler
 # clovervidia
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from builtins import input
 from builtins import zip
-from builtins import str
-from builtins import range
 from past.utils import old_div
 import os.path, argparse, sys
 import requests, json, time, datetime, random, re

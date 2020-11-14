@@ -6,17 +6,18 @@ import requests
 
 # 環境変数からDiscord bot tokenを読み取る
 DISCORD_TOKENS = {
-    "0":os.environ["DISCORD_BOT_TOKEN"]}
+    "0":os.environ["DISCORD_BOT3_TOKEN"]}
 
 # localかherokuかでpathを調整する
 const_paths={
-    "tmp_dir":"/tmp" if os.getenv("DYNO", False) else f"{os.path.dirname(__file__)}/../tmp",
+    "tmp_dir":"/tmp" if os.getenv("DYNO", False) else f"{os.path.dirname(__file__)}/../configs",
     "splat_dir":f"{os.path.dirname(__file__)}/../splatnet2statink"
 }
 
-
-def update_env(new_envs={}):
+def update_env(new_envs={}): # for Heroku
     """環境変数の変更とherokuの環境変数の更新を行います。その後、botは再起動されます。"""
+    if not os.getenv("DYNO", False):
+        return
     for k, v in new_envs.items():
         os.environ[k]=v
     app_name=os.getenv("HEROKU_APP_NAME", "app-splat") #HEROKU_APP_NAME, set default value
