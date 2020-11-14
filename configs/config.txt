@@ -1,6 +1,6 @@
 {
-    "api_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "cookie": "b6183738e88496538c5866a93006df4cef348d9d",
-    "session_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyYWRlYTU2MjAwZTIwMTA0IiwiaWF0IjoxNjA1MzU4NTc0LCJzdDpzY3AiOlswLDgsOSwxNywyM10sImV4cCI6MTY2ODQzMDU3NCwiYXVkIjoiNzFiOTYzYzFiN2I2ZDExOSIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tIiwidHlwIjoic2Vzc2lvbl90b2tlbiIsImp0aSI6IjM4ODc4NTgxODEifQ.FzJ44Rj4wyC3VMCTYRsi70aDSj_-dlymR_TLLGMrBGU",
+    "api_key": "Hvy2Kgnr-5BfLFZU3PXrYIHg07u42Qq_PaiEzRhuc4A",
+    "cookie": "59d8a81c9f352c754798cc2e44eb19bd86d6fce5",
+    "session_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzODg3OTY4MzYzIiwiaWF0IjoxNjA1MzYwNzE2LCJleHAiOjE2Njg0MzI3MTYsInR5cCI6InNlc3Npb25fdG9rZW4iLCJzdWIiOiIyYWRlYTU2MjAwZTIwMTA0Iiwic3Q6c2NwIjpbMCw4LDksMTcsMjNdLCJpc3MiOiJodHRwczovL2FjY291bnRzLm5pbnRlbmRvLmNvbSIsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkifQ.6aaRBnB6ZIIBgcRATED4aTtbbbGF7XQle1qxaXtDQK0",
     "user_lang": "ja-JP"
 }

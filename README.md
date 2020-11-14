@@ -1,15 +1,16 @@
 # Discord Bot for Stat.ink X Heroku
 
-PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦績を自動アップロードするdiscord bot**を作れるようにしたいと考え、このscriptを書きました。  
+PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦績を自動アップロードするdiscord bot**を作れるようにしたいと考え、このscriptを書きました。
 
-- Botの起動からやりたい -> [#事前準備](#事前準備)
+- Botの起動からやりたい (Heroku利用・初心者はこちら) -> [#事前準備](#事前準備), [#Bot起動まで](#Bot起動まで)
+- Botの起動からやりたい (Heroku以外利用) -> [#事前準備・Bot起動まで(Heroku以外)](#事前準備・Bot起動まで(Heroku以外))
 - すでにBotの起動ができている -> [#Botの使い方](#Botの使い方)
 - 苦情・要請 -> [#Contact Me](#contact-me)
 
 ## 事前準備
 ### サービスへの登録など
-無料でやるために、いくつかのサービスを利用します。アカウントをすでに持っているなら、追加で作成する必要はありません。  
-以下のstat.inkのAPI KEYやDISCORD BOT TOKENはメモ帳にでもコピーしておいてください。  
+無料でやるために、いくつかのサービスを利用します。アカウントをすでに持っているなら、追加で作成する必要はありません。
+以下のstat.inkのAPI KEYやDISCORD BOT TOKENはメモ帳にでもコピーしておいてください。
 
 - stat.ink : アカウント作成、API KEYコピー
 - Heroku : アカウント作成、API KEYコピー
@@ -19,10 +20,10 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 
 ### heroku API KEY取得
 
-1. アカウントのアイコンマークをクリックし、Account settingsをクリックします。  
+1. アカウントのアイコンマークをクリックし、Account settingsをクリックします。
 <img with="80%" src="img/heroku_api_ss1.png"/>
 
-2. API Keyの欄でRevealをクリックし、表示されたAPI KEYをメモ帳などにコピーしておきます。  
+2. API Keyの欄でRevealをクリックし、表示されたAPI KEYをメモ帳などにコピーしておきます。
 <img with="80%" src="img/heroku_api_ss2.png"/>
 
 ### stat.ink API KEY取得
@@ -35,21 +36,21 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 ## Bot起動まで
 ### HerokuへDeploy
 1. **あらかじめブラウザまたはアプリのHerokuにログインしておきます。**
-2. ↓このボタンをクリックします。  
+2. ↓このボタンをクリックします。
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-3. しばらく待機します。画面が切り替わらなければページをリロード。  
+3. しばらく待機します。画面が切り替わらなければページをリロード。
 4. app-nameに`app-splat`(他の名前でもよい)を入力して
-    - PC : `Deploy app`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。  
-    - スマホ : `Create app`をクリックする。  
+    - PC : `Deploy app`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。
+    - スマホ : `Create app`をクリックする。
 
 <img with="80%" src="img/heroku_deploy.png"/>
 
 ### 環境変数の登録 (API KEY、TOKENなど)
 
-続けて、環境変数としてTOKENなどを登録します。  
-1. Setting<img height="20px" src="img/heroku_icon_setting.png"></img> の中のConfig Varsの欄へ。  
+続けて、環境変数としてTOKENなどを登録します。
+1. Setting<img height="20px" src="img/heroku_icon_setting.png"></img> の中のConfig Varsの欄へ。
 2. Reveal Config Varsをクリックして、以下の環境変数を入力していきます。  
    KEYとVALUEを1組入力するごとに`Add`をクリックします。  
 
@@ -63,39 +64,49 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 
 ### Botを起動
 
-メニューの欄のResources<img height="20px" src="img/heroku_icon_resource.png"></img>へ。  
-1. 鉛筆マーク<img height="20px" src="img/heroku_icon_pencil.png"></img>をクリックし、バー<img height="20px" src="img/heroku_toggle_off.png"></img>を右にスライドして青く<img height="20px" src="img/heroku_toggle_on.png"></img>なればOK。  
-2. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。  
+メニューの欄のResources<img height="20px" src="img/heroku_icon_resource.png"></img>へ。
+1. 鉛筆マーク<img height="20px" src="img/heroku_icon_pencil.png"></img>をクリックし、バー<img height="20px" src="img/heroku_toggle_off.png"></img>を右にスライドして青く<img height="20px" src="img/heroku_toggle_on.png"></img>なればOK。
+2. `Confirm`をクリックすれば、しばらくするとDiscord Botが起動します。
 
-Botのいるサーバーで`?help`と入力してBotから反応があれば起動完了です。  
+Botのいるサーバーで`?help`と入力してBotから反応があれば起動完了です。
 <img with="80%" src="img/discord_help.png"/>
 
-## Botの使い方
+## 事前準備・Bot起動まで(Heroku以外)
+GCPなどHeroku以外のサービスでDiscord Botを利用する方法を解説します。ある程度初心者でないことを想定して、こちらの解説は簡単にしています。
 
+### 事前準備
+- stat.ink : アカウント作成、API KEYコピー
+- discord : アカウント作成、DISCORD BOT TOKENコピー、BOTのserverへの追加
+    - 参考 [Discord Botアカウント初期設定ガイド for Developer](https://qiita.com/1ntegrale9/items/cb285053f2fa5d0cccdf)のうち**はじめに~サーバーへの登録**
+
+### Bot起動まで
+`git clone`などでダウンロードし、`pip3 install -r requirements.txt`で必要なライブラリをインストールします。最後に`python3 src/main.py`でdiscord botを起動します。terminalにエラーメッセージが出なければ大丈夫です。`screen`は必要に応じて利用してください。
+
+## Botの使い方
 ### BotへのNintendoアカウント登録
 `?startIksm <STATINK_API_KEY>`
-1. stat.inkのAPI KEYを用意しておきます。  
-2. botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。  
+1. stat.inkのAPI KEYを用意しておきます。
+2. botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。
 (**botと同じサーバーに加入していれば、アカウントの設定にもよりますが、そのbotとDMを行うことが可能です。**)
 
 > ※注意
 **API KEYやTOKENなどと呼ばれるものは、すべてアカウント名とパスワードのセットと等価です。他人にばれることはとても危険なことです。**
-家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、できるだけbotとのDMで`?startIksm`は行ってください。  
+家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、できるだけbotとのDMで`?startIksm`は行ってください。
 
-3. すると、botからURLが送られてくるのでそのリンクをタップします。  
+3. すると、botからURLが送られてくるのでそのリンクをタップします。
 <img with="80%" src="img/discord_startIksm.png"/>
 4. リンク先でログインすると、連携アカウントの選択画面になるので、
 **「この人にする」を右クリック(スマホなら長押し)して、リンク先のURLをコピーします。**
 <img with="80%" src="img/nintendo_select.png"/>
 
-5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。  
+5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。
 <img with="80%" src="img/discord_startIksm2.png"/>
 
 ここまでできれば、戦績の定期アップロードは自動で15分ごとに行われます。(毎時00/15/30/45分です。)
-お疲れ様です。  
+お疲れ様です。
 
 ### 各種コマンド
-`?help Splat`とBotに入力することでも確認できます。  
+`?help Splat`とBotに入力することでも確認できます。
 
 |コマンド|引数|説明|
 |-|-|-|
@@ -108,7 +119,7 @@ Botのいるサーバーで`?help`と入力してBotから反応があれば起�
 ## Botがうまく動かない
 
 よく分からないかもしれませんが、logを確認しましょう。  
-Herokuを開いて、Open appの横のMore->view logsをクリック。  
+Herokuを開いて、Open appの横のMore->view logsをクリック。そこで表示されるlogから原因を探ってください。
 
 <img height="300px" src="img/heroku_menu_more.png"/>
 
@@ -151,7 +162,7 @@ discord botとのchatでどうにかできます。(詳しくは使い方を参�
 
 ## Contact Me
 
-[Tomotom0](https://github.com/TomoTom0)
+[TomoTom0](https://github.com/TomoTom0)
 
 ## LICENSE
 MIT
