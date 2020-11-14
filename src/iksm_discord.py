@@ -27,23 +27,22 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 	try:
 		post_login, auth_code_verifier = log_in_discord(A_VERSION, ctx.channel)
 	except Exception as e:
-		ctx.channel.send(f"エラーが発生しました。{e}\nもう一度「?startIksm <API KEY>」からやり直してください。")
+		ctx.channel.send(f"エラーが発生しました。{e}\nもう一度`?startIksm <API KEY>`からやり直してください。")
 		return
-	print_content=f"リンクをクリックしてログインし, 「この人にする」ボタンを長押し(PCなら右クリック)してリンク先のURLをコピーします\
-		\n**注意: ボタンをそのままクリックするのではありません。**"
+	print_content=f"リンクをクリックしてログインし, 「この人にする」ボタンを長押し(PCなら右クリック)してリンク先のURLをコピーしてください。**注意: ボタンをそのままクリックするのではありません。**"
+	await ctx.channel.send(print_content)
 	await ctx.channel.send(post_login)
 	new_token=""
 	while new_token=="":
 		try:
-			await ctx.channel.send("URLをペーストしてください。キャンセルする場合は「cancel」と入力してください。")
+			await ctx.channel.send("URLをペーストしてください。キャンセルする場合は`cancel`と入力してください。")
 			def check_url(msg):
 				return msg.author.id==ctx.message.author.id and (msg.content.startswith("npf71b963c1b7b6d119://") or msg.content == "cancel")
 			try:
 				input_url = await ctx.bot.wait_for("message", check=check_url, timeout=600)
 			except asyncio.TimeoutError:
-				await ctx.channel.send("Timeoutです。もう一度「?startIksm <API KEY>」からやり直してください。")
+				await ctx.channel.send("Timeoutです。もう一度`?startIksm <API KEY>`からやり直してください。")
 				return
-
 			if input_url.content == "cancel":
 				await ctx.channel.send("Canceled.")
 				return
@@ -52,32 +51,44 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 		except AttributeError:
 			await ctx.channel.send("不適切なURLです。\nもう一度コピーしてきてください。")
 		except KeyError: # session_token not found
-			await ctx.channel.send("\niksm_sessionが見つかりませんでした。Nintendo Accountをログアウトしてから、もう一度行ってください。")
+			await ctx.channel.send("\niksm_sessionが見つかりませんでした。Nintendo Accountからログアウトし、もう一度はじめからやり直してください。")
 
 	acc_name, new_cookie = get_cookie_discord(new_token, USER_LANG, A_VERSION, ctx.channel)
 	config_data = {"api_key": API_KEY, "cookie": new_cookie, "user_lang": USER_LANG, "session_token": new_token}
-
 	# save config
-	before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
-	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
-	try:
-		before_config_jsons.update({acc_name: config_data})
-	except:
-		before_config_jsons={acc_name: config_data}
-	json_configs=json.dumps(before_config_jsons)
-	basic.update_env({"iksm_configs":json.dumps(json_configs)})
+	if basic.IsHeroku: # for Heroku
+		before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
+		before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
+		try:
+			before_config_jsons.update({acc_name: config_data})
+		except:
+			before_config_jsons={acc_name: config_data}
+		json_configs=json.dumps(before_config_jsons)
+		basic.update_env({"iksm_configs":json.dumps(json_configs)})
+	else: # for not Heroku
+		os.makedirs(tmp_dir, exist_ok=True)
+		with open(f"{tmp_dir}/{acc_name}_config.txt", "w") as f:
+			f.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
 
 def auto_upload_iksm():
 	# auto upload
-	before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
-	before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
-	for acc_name, v in before_config_jsons.items():
-		if v["api_key"]=="0"*43: # API_KEY is not setted
-			continue
-		# make config from ENV
-		with open(f"{tmp_dir}/config.txt", "w") as f:
-			f.dump(v)
-		subprocess.run(["python3", f"{splat_path}/splatnet2statink.py", "-r"])
+	if basic.IsHeroku: # for Heroku
+		before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
+		before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
+		for acc_name, v in before_config_jsons.items():
+			if v["api_key"]=="0"*43: # API_KEY is not setted
+				continue
+			# make config from ENV
+			with open(f"{tmp_dir}/config.txt", "w") as f:
+				f.dump(v)
+			subprocess.run(["python3", f"{splat_path}/splatnet2statink.py", "-r"])
+	else: # for not Heroku
+		config_names = [path for path in os.listdir(tmp_dir) if path.endswith("_config.txt")]
+		for config_name in config_names:
+			shutil.copy(f"{tmp_dir}/{config_name}", f"{tmp_dir}/config.txt")
+			subprocess.run(["python3", f"{splat_path}/splatnet2statink.py", "-r"])
+		os.remove(f"{splat_path}/config.txt")
+
 
 # -----------/ remake functions for discord_bot /-----------
 
@@ -237,7 +248,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 			'X-ProductVersion': '1.9.0',
 			'Content-Type':     'application/json; charset=utf-8',
 			'Connection':       'Keep-Alive',
-			'Authorization':    'Bearer {}'.format(splatoon_token["result"]["webApiServerCredential"]["accessToken"]),
+			'Authorization':    f'Bearer {splatoon_token["result"]["webApiServerCredential"]["accessToken"]}',
 			'Content-Length':   '37',
 			'X-Platform':       'Android',
 			'Accept-Encoding':  'gzip'
