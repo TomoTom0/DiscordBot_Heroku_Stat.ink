@@ -56,7 +56,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 	acc_name, new_cookie = get_cookie_discord(new_token, USER_LANG, A_VERSION, ctx.channel)
 	config_data = {"api_key": API_KEY, "cookie": new_cookie, "user_lang": USER_LANG, "session_token": new_token}
 	# save config
-	if os.getenv("DYNO", False): # for Heroku
+	if basic.IsHeroku: # for Heroku
 		before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
 		before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
 		try:
@@ -72,7 +72,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 
 def auto_upload_iksm():
 	# auto upload
-	if os.getenv("DYNO", False): # for Heroku
+	if basic.IsHeroku: # for Heroku
 		before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
 		before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
 		for acc_name, v in before_config_jsons.items():

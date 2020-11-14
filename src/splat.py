@@ -23,17 +23,17 @@ class Splat(commands.Cog):
         if len(STAT_INK_API_KEY)!=43:
             await ctx.channel.send("引数としてstat.inkのAPI KEYが入力されていない、または入力に不備があります。")
             return
-        if os.getenv("DYNO", False) and not os.getenv("HEROKU_APIKEY", False):
+        if basic.IsHeroku and not os.getenv("HEROKU_APIKEY", False):
             await ctx.channel.send("Herokuの環境変数としてHerokuのAPI KEYが入力されていません。")
             return
         await iksm_discord.make_config_discord(STAT_INK_API_KEY, conifg_dir, ctx)
-        success_message="新たにアカウントが登録されました。" + ("\nこの後botは再起動されます。次の操作はしばらくお待ちください。" if os.getenv("DYNO", False) else "")
+        success_message="新たにアカウントが登録されました。" + ("\nこの後botは再起動されます。次の操作はしばらくお待ちください。" if basic.IsHeroku else "")
         await ctx.channel.send(success_message)
 
     @commands.command(description="", pass_context=True)
     async def checkIksmSession(self, ctx: commands.Context, acc_name):
         """指定されたアカウントのiksm_sessionを表示します。"""
-        if os.getenv("DYNO", False):
+        if basic.IsHeroku:
             before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
             before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
             json_file=before_config_jsons[acc_name]
@@ -46,7 +46,7 @@ class Splat(commands.Cog):
     @commands.command(description="", pass_context=True)
     async def rmIksm(self, ctx: commands.Context, acc_name):
         """指定されたアカウントの情報を削除します。"""
-        if os.getenv("DYNO", False): # for Heroku
+        if basic.IsHeroku: # for Heroku
             before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
             before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
             json_files={k:v for k, v in before_config_jsons.items() if k!=acc_name}
@@ -58,7 +58,7 @@ class Splat(commands.Cog):
     @commands.command(description="", pass_context=True)
     async def showIksmAcc(self, ctx: commands.Context):
         """登録されているnintendoアカウント一覧を表示します。"""
-        if os.getenv("DYNO", False): # for Heroku
+        if basic.IsHeroku: # for Heroku
             before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
             before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
             acc_names = [k for k, v in before_config_jsons.items() ]
