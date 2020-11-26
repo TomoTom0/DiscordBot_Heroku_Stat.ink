@@ -5,7 +5,7 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 - Botの起動からやりたい (Heroku利用・初心者はこちら) -> [#事前準備](#事前準備), [#Bot起動まで](#Bot起動まで)
 - Botの起動からやりたい (Heroku以外利用) -> [#事前準備・Bot起動まで(Heroku以外)](#事前準備・Bot起動まで(Heroku以外))
 - すでにBotの起動ができている -> [#Botの使い方](#Botの使い方)
-- 苦情・要請 -> [#Contact Me](#contact-me)
+- 連絡先 -> [#Contact Me](#contact-me)
 
 ## 事前準備
 ### サービスへの登録など
@@ -123,34 +123,6 @@ Herokuを開いて、Open appの横のMore->view logsをクリック。そこで
 
 <img height="300px" src="img/heroku_menu_more.png"/>
 
-## 適当な解説
-
-### 戦績保存アプリ
-Splatoon2の戦績は公式のNintendo Onlineアプリから確認できますが、最新の50戦以外は確認できず統計的な利用もできません。  
-その戦績データを外部に保存しようという試みはいくつかあります。(stat.ink, ikaWidget2, ikaLogなど)  
-しかしそれらに自動で定期的に戦績をアップロードする機能は含まれておらず、アップロードする前に50戦してしまうと、その間の戦績が失われてしまいます。  
-
-### splatnet2statink
-
-splatnet2statinkは戦績をstat.inkに自動でアップロードしてくれるPythonファイルです。  
-これを定期的に実行することができれば、問題はほとんど解決です。  
-しかし、無料でオンラインでプログラムを実行し続けることなんてできるのでしょうか?
-
-### Heroku
-
-できます。無料のものに限ってもGCPやHerokuなどの選択肢があるのですが、
-今回はPC初心者向けということでHerokuを選びました。  
-HerokuならPCなしでもできます。(大学生以上の方などでLinuxに苦手感がないなら、GCPの方が使い勝手はいいです。)  
-
-### iksm_session
-
-では、最後の関門です。  
-Splatoon2のデータを取り扱うには、はじめにiksm_session(イカスミsession)と呼ばれる文字列を取得する必要があります。  
-これはPCでbash系、あるいはPowerShellなどを動かせるなら大した問題ではないのですが、
-不慣れな人にとっては十分に大きな問題でしょう。  
-
-そこで、今回のdiscord botではこれも解決しました。  
-discord botとのchatでどうにかできます。(詳しくは使い方を参照。)
 
 ## Botを自分好みに改造したくなったら
 [Discord Bot 最速チュートリアル【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)を参考にしてください。  
@@ -162,7 +134,7 @@ discord botとのchatでどうにかできます。(詳しくは使い方を参�
 
 ## Contact Me
 
-[TomoTom0](https://github.com/TomoTom0)
+- Gmail: TomoIris427@gmail.com
 
 ## LICENSE
 MIT
