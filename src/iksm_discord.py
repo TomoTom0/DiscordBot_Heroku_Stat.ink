@@ -80,7 +80,7 @@ def auto_upload_iksm():
 				continue
 			# make config from ENV
 			with open(f"{tmp_dir}/config.txt", "w") as f:
-				f.dump(v)
+				f.write(v)
 			subprocess.run(["python3", f"{splat_path}/splatnet2statink.py", "-r"])
 	else: # for not Heroku
 		config_names = [path for path in os.listdir(tmp_dir) if path.endswith("_config.txt")]
