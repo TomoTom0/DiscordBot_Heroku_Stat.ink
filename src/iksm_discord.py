@@ -8,7 +8,7 @@ import json
 import shutil, subprocess
 
 sys.path.append(f"{os.path.dirname(__file__)}/../splatnet2statink")
-from iksm import call_flapg_api, get_session_token
+from iksm import call_flapg_api, get_session_token, version_NSO
 import discord
 from discord.ext import commands
 import asyncio
@@ -17,12 +17,13 @@ import basic
 splat_path=basic.const_paths["splat_dir"]
 tmp_dir=basic.const_paths["tmp_dir"]
 
+
 # ------------/ discord functions /-----------------
 
 # make config file
 async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_session=False):
 	USER_LANG="ja-JP"
-	A_VERSION="1.5.6"
+	A_VERSION="1.5.8"
 
 	try:
 		post_login, auth_code_verifier = log_in_discord(A_VERSION, ctx.channel)
@@ -150,7 +151,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 		'Content-Length':  '439',
 		'Accept':          'application/json',
 		'Connection':      'Keep-Alive',
-		'User-Agent':      'OnlineLounge/1.9.0 NASDKAPI Android'
+		'User-Agent':      f'OnlineLounge/{version_NSO} NASDKAPI Android'
 	}
 
 	body = {
@@ -167,7 +168,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 	# get user info
 	try:
 		app_head = {
-			'User-Agent':      'OnlineLounge/1.9.0 NASDKAPI Android',
+			'User-Agent':      f'OnlineLounge/{version_NSO} NASDKAPI Android',
 			'Accept-Language': userLang,
 			'Accept':          'application/json',
 			'Authorization':   'Bearer {}'.format(id_response["access_token"]),
@@ -191,9 +192,9 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 	app_head = {
 		'Host':             'api-lp1.znc.srv.nintendo.net',
 		'Accept-Language':  userLang,
-		'User-Agent':       'com.nintendo.znca/1.9.0 (Android/7.1.2)',
+		'User-Agent':       f'com.nintendo.znca/{version_NSO} (Android/7.1.2)',
 		'Accept':           'application/json',
-		'X-ProductVersion': '1.9.0',
+		'X-ProductVersion': f'{version_NSO}',
 		'Content-Type':     'application/json; charset=utf-8',
 		'Connection':       'Keep-Alive',
 		'Authorization':    'Bearer',
@@ -243,9 +244,9 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 	try:
 		app_head = {
 			'Host':             'api-lp1.znc.srv.nintendo.net',
-			'User-Agent':       'com.nintendo.znca/1.9.0 (Android/7.1.2)',
+			'User-Agent':       f'com.nintendo.znca/{version_NSO} (Android/7.1.2)',
 			'Accept':           'application/json',
-			'X-ProductVersion': '1.9.0',
+			'X-ProductVersion': f'{version_NSO}', # update
 			'Content-Type':     'application/json; charset=utf-8',
 			'Connection':       'Keep-Alive',
 			'Authorization':    f'Bearer {splatoon_token["result"]["webApiServerCredential"]["accessToken"]}',
