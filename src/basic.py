@@ -32,4 +32,5 @@ def update_env(new_envs={}): # for Heroku
         "Content-Type":"application/json",
         "Accept":"application/vnd.heroku+json; version=3"}
     res=requests.patch(patch_url, headers=headers, json=new_envs)
+    print(res.json())
     return res

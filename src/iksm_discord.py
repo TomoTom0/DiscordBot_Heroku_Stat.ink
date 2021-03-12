@@ -56,6 +56,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 
 	acc_name, new_cookie = get_cookie_discord(new_token, USER_LANG, A_VERSION, ctx.channel)
 
+
 	config_data = {"api_key": API_KEY, "cookie": new_cookie, "user_lang": USER_LANG, "session_token": new_token}
 	# save config
 	if basic.IsHeroku: # for Heroku
@@ -72,7 +73,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 		with open(f"{tmp_dir}/{acc_name}_config.txt", "w") as f:
 			f.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
 
-def auto_upload_iksm():
+async def auto_upload_iksm():
 	# auto upload
 	if basic.IsHeroku: # for Heroku
 		before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
@@ -89,8 +90,8 @@ def auto_upload_iksm():
 		for config_name in config_names:
 			shutil.copy(f"{tmp_dir}/{config_name}", f"{tmp_dir}/config.txt")
 			subprocess.run(["python3", f"{splat_path}/splatnet2statink.py", "-r"])
-		if len(config_names)!=0:
-			os.remove(f"{splat_path}/config.txt")
+		#if len(config_names)!=0:
+		#	os.remove(f"{tmp_dir}/config.txt")
 
 
 # -----------/ remake functions for discord_bot /-----------
@@ -168,6 +169,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 	id_response = json.loads(r.text)
 
 
+
 	# get user info
 	try:
 		app_head = {
@@ -188,6 +190,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 
 	r = requests.get(url, headers=app_head)
 	user_info = json.loads(r.text)
+
 
 
 	nickname = user_info["nickname"]
@@ -214,7 +217,6 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 		flapg_nso = call_flapg_api(idToken, guid, timestamp, "nso")
 
 
-
 		parameter = {
 			'f':          flapg_nso["f"],
 			'naIdToken':  flapg_nso["p1"],
@@ -225,10 +227,8 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 			'language':   user_info["language"]
 		}
 	except SystemExit:
-
 		return -1
 	except:
-
 		ctx_channel.send(f"Error(s) from Nintendo: \
 		{json.dumps(id_response, indent=2)} \
 		{json.dumps(user_info, indent=2)}")
@@ -239,6 +239,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 
 
 	r = requests.post(url, headers=app_head, json=body)
+
 	splatoon_token = json.loads(r.text)
 
 
@@ -283,6 +284,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 
 	r = requests.post(url, headers=app_head, json=body)
 	splatoon_access_token = json.loads(r.text)
+
 
 
 	# get cookie

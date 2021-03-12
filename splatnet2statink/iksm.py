@@ -275,6 +275,7 @@ def get_hash_from_s2s_api(id_token, timestamp):
 
 	# check to make sure we're allowed to contact the API. stop spamming my web server pls
 	config_data={}
+
 	try:
 		with open(config_path, "r") as f:
 			config_data = json.loads(f.read()) # fileが存在しない場合に
@@ -285,23 +286,29 @@ def get_hash_from_s2s_api(id_token, timestamp):
 		print("Too many errors received from the splatnet2statink API. Further requests have been blocked until the \"api_errors\" line is manually removed from config.txt. If this issue persists, please contact @frozenpandaman on Twitter/GitHub for assistance.")
 		sys.exit(1)
 
+
 	# proceed normally
 	try:
 		api_app_head = { 'User-Agent': "splatnet2statink/{}".format(version) }
 		api_body = { 'naIdToken': id_token, 'timestamp': timestamp }
 		api_response = requests.post("https://elifessler.com/s2s/api/gen2", headers=api_app_head, data=api_body)
+		print(api_response.ok, api_response.content)
+		if not api_response.ok:
+			raise Exception
+		print(api_response.text)
 		return json.loads(api_response.text)["hash"]
 	except:
 		print("Error from the splatnet2statink API:\n{}".format(json.dumps(json.loads(api_response.text), indent=2)))
 
 		# add 1 to api_errors in config
 		config_data={}
-		with open(config_path, "r") as config_file:
-			config_data = json.load(config_file)
 		try:
+			with open(config_path, "r") as config_file:
+				config_data = json.load(config_file)
 			num_errors = config_data["api_errors"]
 		except:
 			num_errors = 0
+
 		num_errors += 1
 		config_data["api_errors"] = num_errors
 
@@ -324,13 +331,11 @@ def call_flapg_api(id_token, guid, timestamp, type):
 			'x-ver':   '3',
 			'x-iid':   type
 		}
-		print(api_app_head)
 		api_response = requests.get("https://flapg.com/ika2/api/login?public", headers=api_app_head)
-		print(api_response)
+		print(api_response.text)
 		f = json.loads(api_response.text)["result"]
 		return f
 	except Exception as e:
-		print(e)
 		try: # if api_response never gets set
 			if api_response.text:
 				print(u"Error from the flapg API:\n{}".format(json.dumps(json.loads(api_response.text), indent=2, ensure_ascii=False)))
