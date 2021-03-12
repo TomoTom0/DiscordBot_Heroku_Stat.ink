@@ -275,9 +275,9 @@ def get_hash_from_s2s_api(id_token, timestamp):
 
 	# check to make sure we're allowed to contact the API. stop spamming my web server pls
 	config_data={}
-	with open(config_path, "r") as f:
-		config_data = json.loads(f.read())
 	try:
+		with open(config_path, "r") as f:
+			config_data = json.loads(f.read()) # fileが存在しない場合に
 		num_errors = config_data["api_errors"]
 	except:
 		num_errors = 0
@@ -324,10 +324,13 @@ def call_flapg_api(id_token, guid, timestamp, type):
 			'x-ver':   '3',
 			'x-iid':   type
 		}
+		print(api_app_head)
 		api_response = requests.get("https://flapg.com/ika2/api/login?public", headers=api_app_head)
+		print(api_response)
 		f = json.loads(api_response.text)["result"]
 		return f
-	except:
+	except Exception as e:
+		print(e)
 		try: # if api_response never gets set
 			if api_response.text:
 				print(u"Error from the flapg API:\n{}".format(json.dumps(json.loads(api_response.text), indent=2, ensure_ascii=False)))

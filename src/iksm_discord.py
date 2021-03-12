@@ -55,6 +55,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
 			await ctx.channel.send("\niksm_sessionが見つかりませんでした。Nintendo Accountからログアウトし、もう一度はじめからやり直してください。")
 
 	acc_name, new_cookie = get_cookie_discord(new_token, USER_LANG, A_VERSION, ctx.channel)
+
 	config_data = {"api_key": API_KEY, "cookie": new_cookie, "user_lang": USER_LANG, "session_token": new_token}
 	# save config
 	if basic.IsHeroku: # for Heroku
@@ -88,7 +89,8 @@ def auto_upload_iksm():
 		for config_name in config_names:
 			shutil.copy(f"{tmp_dir}/{config_name}", f"{tmp_dir}/config.txt")
 			subprocess.run(["python3", f"{splat_path}/splatnet2statink.py", "-r"])
-		os.remove(f"{splat_path}/config.txt")
+		if len(config_names)!=0:
+			os.remove(f"{splat_path}/config.txt")
 
 
 # -----------/ remake functions for discord_bot /-----------
@@ -165,6 +167,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 	r = requests.post(url, headers=app_head, json=body)
 	id_response = json.loads(r.text)
 
+
 	# get user info
 	try:
 		app_head = {
@@ -185,6 +188,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 
 	r = requests.get(url, headers=app_head)
 	user_info = json.loads(r.text)
+
 
 	nickname = user_info["nickname"]
 
@@ -209,6 +213,8 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 
 		flapg_nso = call_flapg_api(idToken, guid, timestamp, "nso")
 
+
+
 		parameter = {
 			'f':          flapg_nso["f"],
 			'naIdToken':  flapg_nso["p1"],
@@ -219,8 +225,10 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 			'language':   user_info["language"]
 		}
 	except SystemExit:
+
 		return -1
 	except:
+
 		ctx_channel.send(f"Error(s) from Nintendo: \
 		{json.dumps(id_response, indent=2)} \
 		{json.dumps(user_info, indent=2)}")
@@ -229,8 +237,10 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 
 	url = "https://api-lp1.znc.srv.nintendo.net/v1/Account/Login"
 
+
 	r = requests.post(url, headers=app_head, json=body)
 	splatoon_token = json.loads(r.text)
+
 
 	try:
 		idToken = splatoon_token["result"]["webApiServerCredential"]["accessToken"]
@@ -274,6 +284,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 	r = requests.post(url, headers=app_head, json=body)
 	splatoon_access_token = json.loads(r.text)
 
+
 	# get cookie
 	try:
 		app_head = {
@@ -296,5 +307,6 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel:commands.Contex
 
 	url = "https://app.splatoon2.nintendo.net/?lang={}".format(userLang)
 	r = requests.get(url, headers=app_head)
+
 	return nickname, r.cookies["iksm_session"]
 
