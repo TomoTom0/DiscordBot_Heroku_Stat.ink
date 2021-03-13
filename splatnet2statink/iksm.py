@@ -274,7 +274,7 @@ def get_hash_from_s2s_api(id_token, timestamp):
 	'''Passes an id_token and timestamp to the s2s API and fetches the resultant hash from the response.'''
 
 	# check to make sure we're allowed to contact the API. stop spamming my web server pls
-	config_data={}
+	"""config_data={}
 
 	try:
 		with open(config_path, "r") as f:
@@ -284,7 +284,7 @@ def get_hash_from_s2s_api(id_token, timestamp):
 		num_errors = 0
 	if num_errors >= 5:
 		print("Too many errors received from the splatnet2statink API. Further requests have been blocked until the \"api_errors\" line is manually removed from config.txt. If this issue persists, please contact @frozenpandaman on Twitter/GitHub for assistance.")
-		sys.exit(1)
+		sys.exit(1)"""
 
 
 	# proceed normally
@@ -294,13 +294,14 @@ def get_hash_from_s2s_api(id_token, timestamp):
 		api_response = requests.post("https://elifessler.com/s2s/api/gen2", headers=api_app_head, data=api_body)
 		print(api_response.ok, api_response.content)
 		if not api_response.ok:
-			raise Exception
+			print(api_response.text)
+			sys.exit(1)
 		print(api_response.text)
 		return json.loads(api_response.text)["hash"]
 	except:
-		print("Error from the splatnet2statink API:\n{}".format(json.dumps(json.loads(api_response.text), indent=2)))
+		print("Error from the splatnet2statink API")
 
-		# add 1 to api_errors in config
+		"""# add 1 to api_errors in config
 		config_data={}
 		try:
 			with open(config_path, "r") as config_file:
@@ -316,7 +317,7 @@ def get_hash_from_s2s_api(id_token, timestamp):
 		config_file.seek(0)
 		config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
 		config_file.close()
-
+"""
 		sys.exit(1)
 
 def call_flapg_api(id_token, guid, timestamp, type):

@@ -36,8 +36,7 @@ async def on_ready():
 
     while True:
         # for splatoon2, stat.ink
-        iksm_discord.auto_upload_iksm()
-
+        await iksm_discord.auto_upload_iksm()
         nowtime=datetime.datetime.now()
         tmp_next_time=next_time-(nowtime.minute*60+nowtime.second)%next_time
         print(f"Next Check Time : in {tmp_next_time} sec")

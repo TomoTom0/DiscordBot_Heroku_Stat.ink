@@ -41,7 +41,7 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 3. しばらく待機します。画面が切り替わらなければページをリロード。
-4. app-nameに`app-splat`(他の名前でもよい)を入力して
+4. app-nameに好みの名前を入力して
     - PC : `Deploy app`をクリックし、しばらく待機してDeployが完了したら`Manage App`をクリック。
     - スマホ : `Create app`をクリックする。
 
@@ -57,7 +57,7 @@ PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦
 |KEY|VALUE|
 |-|-|
 |DISCORD_BOT_TOKEN|コピーしておいたDISCORD BOT TOKEN|
-|HEROKU_APP_NAME|HEROKUのapp-name。デフォルトのままなら`app-splat`|
+|HEROKU_APP_NAME|HEROKUのapp-name|
 |HEROKU_APIKEY|コピーしておいたHEROKUのAPI KEY|
 
 <img with="80%" src="img/heroku_env.png"/>
@@ -123,6 +123,8 @@ Herokuを開いて、Open appの横のMore->view logsをクリック。そこで
 
 <img height="300px" src="img/heroku_menu_more.png"/>
 
+同じIPアドレスから短時間に何度もtokenの取得を行おうとした場合、spamとみなされて、しばらくiksm sessionの取得が出来なくなる可能性があります。
+logには _This access has been administratively prohibited by the site operator_ と表示されます。IPアドレスを変更することで解決できます。
 
 ## Botを自分好みに改造したくなったら
 [Discord Bot 最速チュートリアル【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)を参考にしてください。  
