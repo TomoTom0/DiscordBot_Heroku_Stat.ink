@@ -3,13 +3,7 @@
 
 # eli fessler
 # clovervidia
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from builtins import input
 from builtins import zip
-from builtins import str
-from builtins import range
 from past.utils import old_div
 import os.path, argparse, sys
 import requests, json, time, datetime, random, re
@@ -21,7 +15,7 @@ from distutils.version import StrictVersion
 from subprocess import call
 # PIL/Pillow imported at bottom
 
-A_VERSION = "1.5.6"
+A_VERSION = iksm.A_VERSION
 
 print("splatnet2statink v{}".format(A_VERSION))
 
@@ -258,8 +252,8 @@ def check_for_updates():
 def main():
 	'''I/O and setup.'''
 
-	if check_for_updates():
-		sys.exit(0)
+	#if check_for_updates():
+	#	sys.exit(0)
 
 	check_statink_key()
 	set_language()
