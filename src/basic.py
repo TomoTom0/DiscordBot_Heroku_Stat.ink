@@ -26,10 +26,10 @@ def update_env(new_envs={}):  # for Heroku
     for k, v in new_envs.items():
         os.environ[k] = v
     # HEROKU_APP_NAME, set default value
-    app_name = os.getenv("HEROKU_APP_NAME", "app-splat")
-    # if app_name=="":
-    #    print("環境変数のHEROKU_APP_NAMEが定義されていません。")
-    #    return
+    app_name = os.getenv("HEROKU_APP_NAME", "")
+    if app_name=="":
+        print("環境変数のHEROKU_APP_NAMEが定義されていません。")
+        return
     patch_url = f"https://api.heroku.com/apps/{app_name}/config-vars"
     headers = {"Authorization": f"Bearer {os.environ['HEROKU_APIKEY']}",
                "Content-Type": "application/json",

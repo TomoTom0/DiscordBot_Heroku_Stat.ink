@@ -20,7 +20,7 @@ class Splat(commands.Cog):
     async def startIksm(self, ctx: commands.Context, STAT_INK_API_KEY=""):
         """新たにiksm_sessionを取得し、botにアカウントを登録します。\nstat.inkの登録を完了し、API KEYを取得しておいてください。"""
         # 各種API KEYの入力確認
-        if len(STAT_INK_API_KEY)!=43 and STAT_INK_API_KEY!="skip":
+        if len(STAT_INK_API_KEY)!=43 and STAT_INK_API_KEY!="skip": # 例外としてskipはOK。skipの場合、戦績のuploadはされません。
             await ctx.channel.send("引数としてstat.inkのAPI KEYが入力されていない、または入力に不備があります。")
             return
         if basic.IsHeroku and not os.getenv("HEROKU_APIKEY", False):
