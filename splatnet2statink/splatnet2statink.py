@@ -15,7 +15,7 @@ from distutils.version import StrictVersion
 from subprocess import call
 # PIL/Pillow imported at bottom
 
-A_VERSION = "1.5.8"
+A_VERSION = iksm.A_VERSION
 
 print("splatnet2statink v{}".format(A_VERSION))
 
@@ -252,8 +252,8 @@ def check_for_updates():
 def main():
 	'''I/O and setup.'''
 
-	if check_for_updates():
-		sys.exit(0)
+	#if check_for_updates():
+	#	sys.exit(0)
 
 	check_statink_key()
 	set_language()
