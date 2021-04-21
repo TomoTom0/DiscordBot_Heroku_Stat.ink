@@ -29,6 +29,7 @@ splat_path = basic.const_paths["splat_dir"]
 tmp_dir = basic.const_paths["tmp_dir"]
 
 
+
 # ------------/ discord functions /-----------------
 
 # make config file
@@ -138,6 +139,7 @@ async def autoUploadCycle(next_time=900):
             (nowtime.minute*60+nowtime.second) % next_time
         print(f"Next Check Time : in {tmp_next_time} sec")
         await asyncio.sleep(tmp_next_time)
+
 
 # -----------/ remake functions for discord_bot /-----------
 
@@ -306,6 +308,7 @@ async def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands
         }
     except:
         await ctx_channel.send(f"Error from Nintendo (in Account/Login step):\
+
 		{json.dumps(splatoon_token, indent=2)}")
         return
 
@@ -461,3 +464,4 @@ async def call_flapg_api_discord(id_token, guid, timestamp, type, ctx_channel: c
         await ctx_channel.send(error_message)
         raise(RuntimeError(error_message))
         #sys.exit(1)
+
