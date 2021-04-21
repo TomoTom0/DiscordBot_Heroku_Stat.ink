@@ -7,6 +7,7 @@ import os, sys
 import json
 import basic
 import datetime
+import traceback
 import iksm_discord
 
 TOKEN = basic.DISCORD_TOKENS["0"]
@@ -41,7 +42,8 @@ async def on_message(message):
 
 @bot.event  # error時にprint
 async def on_command_error(*args):
-    print(f"{datetime.datetime.now()} / Error occured - {type(args[-1]).__name__}: {args[-1]}")
+    print(traceback.format_exc())
+    #print(f"{datetime.datetime.now()} / Error occured - {type(args[-1]).__name__}: {args[-1]}")
 
 if __name__ == "__main__":  # cogを導入
     for extension in startup_extensions:

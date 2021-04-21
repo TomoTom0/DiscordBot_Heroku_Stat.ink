@@ -19,8 +19,9 @@ import asyncio
 
 import basic
 sys.path.append(f"{os.path.dirname(__file__)}/../splatnet2statink")  # noqa
-from iksm import call_flapg_api, get_session_token, version_NSO, A_VERSION  # noqa
-
+#from iksm import call_flapg_api, get_session_token, version_NSO, A_VERSION  # noqa
+A_VERSION = "1.5.6"
+version_NSO = "1.10.1"
 
 session = requests.Session()
 
@@ -59,14 +60,14 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
                 await ctx.channel.send("Canceled.")
                 return
             session_token_code = re.search('de=(.*)&', input_url.content)
-            new_token = get_session_token(
+            new_token = get_session_token_discord(
                 session_token_code.group(1), auth_code_verifier)
         except AttributeError:
             await ctx.channel.send("不適切なURLです。\nもう一度コピーしてきてください。")
         except KeyError:  # session_token not found
             await ctx.channel.send("\niksm_sessionが見つかりませんでした。Nintendo Accountからログアウトし、もう一度はじめからやり直してください。")
 
-    acc_name, new_cookie = get_cookie_discord(
+    acc_name, new_cookie = await get_cookie_discord(
         new_token, USER_LANG, A_VERSION, ctx.channel)
 
     config_data = {"api_key": API_KEY, "cookie": new_cookie,
@@ -111,7 +112,7 @@ async def auto_upload_iksm():
             with open(f"{tmp_dir}/config.txt") as f:
                 config_json = json.load(f)
             api_key = config_json["api_key"]
-            if v["api_key"] in ["0"*43, "skip"]:  # API_KEY is not setted
+            if api_key in ["0"*43, "skip"]:  # API_KEY is not setted
                 continue
             subprocess.run(
                 ["python3", f"{splat_path}/splatnet2statink.py", "-r"])
@@ -183,7 +184,7 @@ def log_in_discord(ver, ctx_channel: commands.Context.channel):
     return post_login, auth_code_verifier
 
 
-def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Context.channel):
+async def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Context.channel):
     '''Returns a new cookie provided the session_token.'''
 
     version = ver
@@ -225,10 +226,10 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Conte
             'Accept-Encoding': 'gzip'
         }
     except:
-        ctx_channel.send(f"Not a valid autho ization request. Please delete config.txt and try again. \
+        await ctx_channel.send(f"Not a valid autho ization request. Please delete config.txt and try again. \
 		Error from Nintendo (in api/token step): \
 		{json.dumps(id_response, indent=2)}")
-        return -1
+        return
     url = "https://api.accounts.nintendo.com/2.0.0/users/me"
 
     r = requests.get(url, headers=app_head)
@@ -255,7 +256,7 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Conte
     try:
         idToken = id_response["access_token"]
 
-        flapg_nso = call_flapg_api(idToken, guid, timestamp, "nso")
+        flapg_nso = await call_flapg_api_discord(idToken, guid, timestamp, "nso", ctx_channel)
 
         parameter = {
             'f':          flapg_nso["f"],
@@ -266,10 +267,10 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Conte
             'naBirthday': user_info["birthday"],
             'language':   user_info["language"]
         }
-    except SystemExit:
-        return -1
+    #except SystemExit:
+    #    return -1
     except:
-        ctx_channel.send(f"Error(s) from Nintendo: \
+        await ctx_channel.send(f"Error(s) from Nintendo: \
 		{json.dumps(id_response, indent=2)} \
 		{json.dumps(user_info, indent=2)}")
         return -2
@@ -283,9 +284,9 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Conte
 
     try:
         idToken = splatoon_token["result"]["webApiServerCredential"]["accessToken"]
-        flapg_app = call_flapg_api(idToken, guid, timestamp, "app")
+        flapg_app = await call_flapg_api_discord(idToken, guid, timestamp, "app", ctx_channel)
     except:
-        ctx_channel.send("Error from Nintendo (in Account/Login step):" +
+        await ctx_channel.send("Error from Nintendo (in Account/Login step):" +
                          json.dumps(splatoon_token, indent=2))
         return -1
 
@@ -304,9 +305,9 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Conte
             'Accept-Encoding':  'gzip'
         }
     except:
-        ctx_channel.send(f"Error from Nintendo (in Account/Login step):\
+        await ctx_channel.send(f"Error from Nintendo (in Account/Login step):\
 		{json.dumps(splatoon_token, indent=2)}")
-        return -1
+        return
 
     body = {}
     parameter = {
@@ -339,11 +340,124 @@ def get_cookie_discord(session_token, userLang, ver, ctx_channel: commands.Conte
             'X-Requested-With':        'com.nintendo.znca'
         }
     except:
-        ctx_channel.send("Error from Nintendo (in Game/GetWebServiceToken step):" +
+        await ctx_channel.send("Error from Nintendo (in Game/GetWebServiceToken step):" +
                          json.dumps(splatoon_access_token, indent=2))
-        return -1
+        return
 
     url = "https://app.splatoon2.nintendo.net/?lang={}".format(userLang)
     r = requests.get(url, headers=app_head)
 
     return nickname, r.cookies["iksm_session"]
+
+def get_session_token_discord(session_token_code, auth_code_verifier): # use for discord
+    '''Helper function for log_in().'''
+
+    app_head = {
+        'User-Agent':      f'OnlineLounge/{version_NSO} NASDKAPI Android',
+        'Accept-Language': 'en-US',
+        'Accept':          'application/json',
+        'Content-Type':    'application/x-www-form-urlencoded',
+        'Content-Length':  '540',
+        'Host':            'accounts.nintendo.com',
+        'Connection':      'Keep-Alive',
+        'Accept-Encoding': 'gzip'
+    }
+
+    body = {
+        'client_id':                   '71b963c1b7b6d119',
+        'session_token_code':          session_token_code,
+        'session_token_code_verifier': auth_code_verifier.replace(b"=", b"")
+    }
+
+    url = 'https://accounts.nintendo.com/connect/1.0.0/api/session_token'
+
+    r = session.post(url, headers=app_head, data=body)
+    return json.loads(r.text)["session_token"]
+
+async def get_hash_from_s2s_api_discord(id_token, timestamp, ctx_channel: commands.Context.channel): # use for discord
+    '''Passes an id_token and timestamp to the s2s API and fetches the resultant hash from the response.'''
+
+    # check to make sure we're allowed to contact the API. stop spamming my web server pls
+    """config_data={}
+
+	try:
+		with open(config_path, "r") as f:
+			config_data = json.loads(f.read()) # fileが存在しない場合に
+		num_errors = config_data["api_errors"]
+	except:
+		num_errors = 0
+	if num_errors >= 5:
+		print("Too many errors received from the splatnet2statink API. Further requests have been blocked until the \"api_errors\" line is manually removed from config.txt. If this issue persists, please contact @frozenpandaman on Twitter/GitHub for assistance.")
+		sys.exit(1)"""
+
+    # proceed normally
+    try:
+        api_app_head = {'User-Agent': "splatnet2statink/{}".format(A_VERSION)}
+        api_body = {'naIdToken': id_token, 'timestamp': timestamp}
+        api_response = requests.post(
+            "https://elifessler.com/s2s/api/gen2", headers=api_app_head, data=api_body)
+        #print(api_response.ok, api_response.content)
+        if not api_response.ok:
+            print(api_response.text)
+            await ctx_channel.send(api_response.text["error"])
+            return
+        #print(api_response.text)
+        return json.loads(api_response.text)["hash"]
+    except:
+        error_message="Error from the splatnet2statink API"
+        print(error_message)
+        await ctx_channel.send(error_message)
+
+        """# add 1 to api_errors in config
+		config_data={}
+		try:
+			with open(config_path, "r") as config_file:
+				config_data = json.load(config_file)
+			num_errors = config_data["api_errors"]
+		except:
+			num_errors = 0
+
+		num_errors += 1
+		config_data["api_errors"] = num_errors
+
+		config_file = open(config_path, "w") # from write_config()
+		config_file.seek(0)
+		config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
+		config_file.close()
+"""
+        #sys.exit(1)
+
+
+async def call_flapg_api_discord(id_token, guid, timestamp, type, ctx_channel: commands.Context.channel): # use for discord
+    '''Passes in headers to the flapg API (Android emulator) and fetches the response.'''
+
+    try:
+        api_app_head = {
+            'x-token': id_token,
+            'x-time':  str(timestamp),
+            'x-guid':  guid,
+            'x-hash':  await get_hash_from_s2s_api_discord(id_token, timestamp, ctx_channel),
+            'x-ver':   '3',
+            'x-iid':   type
+        }
+        api_response = requests.get(
+            "https://flapg.com/ika2/api/login?public", headers=api_app_head)
+        #print(api_response.text)
+        f = json.loads(api_response.text)["result"]
+        return f
+    except Exception as e:
+        try:  # if api_response never gets set
+            error_message=""
+            if api_response.text:
+                error_message=u"Error from the flapg API:\n{}".format(json.dumps(
+                    json.loads(api_response.text), indent=2, ensure_ascii=False))
+            elif api_response.status_code == requests.codes.not_found:
+                error_message="Error from the flapg API: Error 404 (offline or incorrect headers)."
+            else:
+                error_message="Error from the flapg API: Error {}.".format(api_response.status_code)
+        except:
+            pass
+        print(error_message)
+        await ctx_channel.send(error_message)
+        raise(RuntimeError(error_message))
+        #sys.exit(1)

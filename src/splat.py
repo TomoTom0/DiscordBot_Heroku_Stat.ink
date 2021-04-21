@@ -5,6 +5,7 @@ import json
 import datetime
 import sys
 import iksm_discord
+import traceback
 
 import basic
 
@@ -26,9 +27,14 @@ class Splat(commands.Cog):
         if basic.IsHeroku and not os.getenv("HEROKU_APIKEY", False):
             await ctx.channel.send("Herokuの環境変数としてHerokuのAPI KEYが入力されていません。")
             return
+        #try:
         await iksm_discord.make_config_discord(STAT_INK_API_KEY, conifg_dir, ctx)
         success_message="新たにアカウントが登録されました。" + ("\nこの後botは再起動されます。次の操作はしばらくお待ちください。" if basic.IsHeroku else "")
         await ctx.channel.send(success_message)
+        #except Exception as e:
+        #    error_message = f"エラーが発生しました。\n{traceback.format_exc()}"
+        #    await ctx.channel.send(error_message)
+
 
     @commands.command(description="", pass_context=True)
     async def checkIksmSession(self, ctx: commands.Context, acc_name):

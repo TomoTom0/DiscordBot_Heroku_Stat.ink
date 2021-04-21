@@ -14,7 +14,7 @@ import string
 
 
 session = requests.Session()
-A_VERSION = "1.5.10"
+A_VERSION = "1.5.6"
 version = A_VERSION
 version_NSO = "1.10.1"
 
@@ -94,7 +94,7 @@ def log_in(ver):
             sys.exit(1)
 
 
-def get_session_token(session_token_code, auth_code_verifier):
+def get_session_token(session_token_code, auth_code_verifier): # use for discord
     '''Helper function for log_in().'''
 
     app_head = {
@@ -284,7 +284,7 @@ def get_cookie(session_token, userLang, ver):
     return nickname, r.cookies["iksm_session"]
 
 
-def get_hash_from_s2s_api(id_token, timestamp):
+def get_hash_from_s2s_api(id_token, timestamp): # use for discord
     '''Passes an id_token and timestamp to the s2s API and fetches the resultant hash from the response.'''
 
     # check to make sure we're allowed to contact the API. stop spamming my web server pls
@@ -306,14 +306,16 @@ def get_hash_from_s2s_api(id_token, timestamp):
         api_body = {'naIdToken': id_token, 'timestamp': timestamp}
         api_response = requests.post(
             "https://elifessler.com/s2s/api/gen2", headers=api_app_head, data=api_body)
-        print(api_response.ok, api_response.content)
+        #print(api_response.ok, api_response.content)
         if not api_response.ok:
             print(api_response.text)
-            sys.exit(1)
-        print(api_response.text)
+            raise(RuntimeError(api_response.text))
+        #print(api_response.text)
         return json.loads(api_response.text)["hash"]
     except:
-        print("Error from the splatnet2statink API")
+        error_message="Error from the splatnet2statink API"
+        print(error_message)
+        raise(RuntimeError(error_message))
 
         """# add 1 to api_errors in config
 		config_data={}
@@ -332,10 +334,10 @@ def get_hash_from_s2s_api(id_token, timestamp):
 		config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
 		config_file.close()
 """
-        sys.exit(1)
+        #sys.exit(1)
 
 
-def call_flapg_api(id_token, guid, timestamp, type):
+def call_flapg_api(id_token, guid, timestamp, type): # use for discord
     '''Passes in headers to the flapg API (Android emulator) and fetches the response.'''
 
     try:
@@ -354,18 +356,19 @@ def call_flapg_api(id_token, guid, timestamp, type):
         return f
     except Exception as e:
         try:  # if api_response never gets set
+            error_message=""
             if api_response.text:
-                print(u"Error from the flapg API:\n{}".format(json.dumps(
-                    json.loads(api_response.text), indent=2, ensure_ascii=False)))
+                error_message=u"Error from the flapg API:\n{}".format(json.dumps(
+                    json.loads(api_response.text), indent=2, ensure_ascii=False))
             elif api_response.status_code == requests.codes.not_found:
-                print(
-                    "Error from the flapg API: Error 404 (offline or incorrect headers).")
+                error_message="Error from the flapg API: Error 404 (offline or incorrect headers)."
             else:
-                print("Error from the flapg API: Error {}.".format(
-                    api_response.status_code))
+                error_message="Error from the flapg API: Error {}.".format(api_response.status_code)
         except:
             pass
-        sys.exit(1)
+        print(error_message)
+        raise(RuntimeError(error_message))
+        #sys.exit(1)
 
 
 def enter_cookie():
