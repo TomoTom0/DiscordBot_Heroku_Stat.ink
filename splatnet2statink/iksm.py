@@ -14,7 +14,7 @@ import string
 
 
 session = requests.Session()
-A_VERSION = "1.5.6"
+A_VERSION = "1.5.10"
 version = A_VERSION
 version_NSO = "1.10.1"
 
