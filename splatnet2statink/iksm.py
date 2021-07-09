@@ -14,9 +14,9 @@ import string
 
 
 session = requests.Session()
-A_VERSION = "1.5.10"
+A_VERSION = "1.5.11"
 version = A_VERSION
-version_NSO = "1.10.1"
+NSO_VERSION = "1.11.0"
 
 # ----------- change config_path ------------
 config_path = "/tmp/config.txt" if os.getenv(
@@ -98,7 +98,7 @@ def get_session_token(session_token_code, auth_code_verifier): # use for discord
     '''Helper function for log_in().'''
 
     app_head = {
-        'User-Agent':      f'OnlineLounge/{version_NSO} NASDKAPI Android',
+        'User-Agent':      f'OnlineLounge/{NSO_VERSION} NASDKAPI Android',
         'Accept-Language': 'en-US',
         'Accept':          'application/json',
         'Content-Type':    'application/x-www-form-urlencoded',
@@ -136,7 +136,7 @@ def get_cookie(session_token, userLang, ver):
         'Content-Length':  '439',
         'Accept':          'application/json',
         'Connection':      'Keep-Alive',
-        'User-Agent':      f'OnlineLounge/{version_NSO} NASDKAPI Android'
+        'User-Agent':      f'OnlineLounge/{NSO_VERSION} NASDKAPI Android'
     }
 
     body = {
@@ -153,7 +153,7 @@ def get_cookie(session_token, userLang, ver):
     # get user info
     try:
         app_head = {
-            'User-Agent':      f'OnlineLounge/{version_NSO} NASDKAPI Android',
+            'User-Agent':      f'OnlineLounge/{NSO_VERSION} NASDKAPI Android',
             'Accept-Language': userLang,
             'Accept':          'application/json',
             'Authorization':   'Bearer {}'.format(id_response["access_token"]),
@@ -177,9 +177,9 @@ def get_cookie(session_token, userLang, ver):
     app_head = {
         'Host':             'api-lp1.znc.srv.nintendo.net',
         'Accept-Language':  userLang,
-        'User-Agent':       f'com.nintendo.znca/{version_NSO} (Android/7.1.2)',
+        'User-Agent':       f'com.nintendo.znca/{NSO_VERSION} (Android/7.1.2)',
         'Accept':           'application/json',
-        'X-ProductVersion': f'{version_NSO}',
+        'X-ProductVersion': f'{NSO_VERSION}',
         'Content-Type':     'application/json; charset=utf-8',
         'Connection':       'Keep-Alive',
         'Authorization':    'Bearer',
@@ -229,9 +229,9 @@ def get_cookie(session_token, userLang, ver):
     try:
         app_head = {
             'Host':             'api-lp1.znc.srv.nintendo.net',
-            'User-Agent':       f'com.nintendo.znca/{version_NSO} (Android/7.1.2)',
+            'User-Agent':       f'com.nintendo.znca/{NSO_VERSION} (Android/7.1.2)',
             'Accept':           'application/json',
-            'X-ProductVersion': f'{version_NSO}',
+            'X-ProductVersion': f'{NSO_VERSION}',
             'Content-Type':     'application/json; charset=utf-8',
             'Connection':       'Keep-Alive',
             'Authorization':    'Bearer {}'.format(splatoon_token["result"]["webApiServerCredential"]["accessToken"]),

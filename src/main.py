@@ -31,19 +31,16 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     # メッセージ送信者がBotだった場合は無視する
-    if message.author.bot:
+    if message.author.bot is True:
         return
-    if message.content == '腹が鳴る':
-        await message.channel.send('腕が鳴るだろ……')
 
     # bot.commandにmessageを流す
-    await bot.process_commands(message)
+    try:
+        await bot.process_commands(message)
+    except Exception as e:
+            error_message = f"エラーが発生しました。\n{traceback.format_exc()}"
+            print(error_message)
 
-
-@bot.event  # error時にprint
-async def on_command_error(*args):
-    print(traceback.format_exc())
-    #print(f"{datetime.datetime.now()} / Error occured - {type(args[-1]).__name__}: {args[-1]}")
 
 if __name__ == "__main__":  # cogを導入
     for extension in startup_extensions:
