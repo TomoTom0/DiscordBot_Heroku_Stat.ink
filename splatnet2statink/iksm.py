@@ -22,6 +22,7 @@ NSO_VERSION = "1.11.0"
 config_path = "/tmp/config.txt" if os.getenv(
     "DYNO", False) else f"{os.path.dirname(__file__)}/../configs/config.txt"
 
+
 # ----------- original config_path ----------
 # place config.txt in same directory as script (bundled or not)
 # if getattr(sys, 'frozen', False):
@@ -118,6 +119,7 @@ def get_session_token(session_token_code, auth_code_verifier): # use for discord
 
     r = session.post(url, headers=app_head, data=body)
     return json.loads(r.text)["session_token"]
+
 
 
 def get_cookie(session_token, userLang, ver):
@@ -289,6 +291,9 @@ def get_hash_from_s2s_api(id_token, timestamp): # use for discord
 
     # check to make sure we're allowed to contact the API. stop spamming my web server pls
     """config_data={}
+
+	# check to make sure we're allowed to contact the API. stop spamming my web server pls
+	"""config_data={}
 
 	try:
 		with open(config_path, "r") as f:

@@ -507,3 +507,4 @@ async def call_flapg_api_discord(id_token, guid, timestamp, type, A_VERSION, ctx
         await ctx_channel.send(error_message)
         raise(RuntimeError(error_message))
         #sys.exit(1)
+
