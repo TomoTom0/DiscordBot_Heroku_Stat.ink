@@ -1,6 +1,0 @@
-{
-    "api_key": "skip",
-    "cookie": "4d77e741aaab565300b37715b5fbe1e04b3117fa",
-    "session_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4ZGZmMWJmNTNiY2EzNDQzIiwiaWF0IjoxNjI1ODM5NzY3LCJleHAiOjE2ODg5MTE3NjcsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkiLCJqdGkiOiI1NjI4MjI4NjgxIiwic3Q6c2NwIjpbMCw4LDksMTcsMjNdLCJpc3MiOiJodHRwczovL2FjY291bnRzLm5pbnRlbmRvLmNvbSIsInR5cCI6InNlc3Npb25fdG9rZW4ifQ.w1ct_yWKvuoILP1Xll8TbyVIGpmsa4nK0_-9AL3j7rQ",
-    "user_lang": "ja-JP"
-}
