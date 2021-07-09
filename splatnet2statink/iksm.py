@@ -291,10 +291,6 @@ def get_hash_from_s2s_api(id_token, timestamp): # use for discord
 
     # check to make sure we're allowed to contact the API. stop spamming my web server pls
     """config_data={}
-
-	# check to make sure we're allowed to contact the API. stop spamming my web server pls
-	"""config_data={}
-
 	try:
 		with open(config_path, "r") as f:
 			config_data = json.loads(f.read()) # fileが存在しない場合に
@@ -330,15 +326,13 @@ def get_hash_from_s2s_api(id_token, timestamp): # use for discord
 			num_errors = config_data["api_errors"]
 		except:
 			num_errors = 0
-
 		num_errors += 1
 		config_data["api_errors"] = num_errors
-
 		config_file = open(config_path, "w") # from write_config()
 		config_file.seek(0)
 		config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
 		config_file.close()
-"""
+        """
         #sys.exit(1)
 
 

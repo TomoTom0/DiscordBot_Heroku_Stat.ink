@@ -90,6 +90,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
     versions = obtainVersions()
     NSO_VERSION = versions["NSO"]
     A_VERSION = versions["A"]
+
     USER_LANG = "ja-JP"
 
     try:
@@ -523,6 +524,7 @@ async def get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_chan
 
     # check to make sure we're allowed to contact the API. stop spamming my web server pls
     """config_data={}
+
 
 	try:
 		with open(config_path, "r") as f:
