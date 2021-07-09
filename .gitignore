@@ -1,5 +1,5 @@
 *Zone.Identifier
-configs/*
+configs/*config.txt
 .*
 
 # Byte-compiled / optimized / DLL files
