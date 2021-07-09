@@ -111,10 +111,9 @@ GCPなどHeroku以外のサービスでDiscord Botを利用する方法を解説
 |コマンド|引数|説明|
 |-|-|-|
 |`?startIksm`|STAT_INK_API_KEY| 新たにiksm_sessionを取得し、botにアカウントを登録します。 事前にstat.inkの登録を完了し、API KEYを取得しておいてください。|
-|`?checkIksmSession`|acc_name|指定されたアカウントのiksm_sessionを表示します。|
-|`?changeAPI`|acc_name, NEW_API_KEY|指定されたアカウントのstat.inkのAPI KEYを変更します。|
+|`?checkIksm`|acc_name|指定されたアカウントのiksm_sessionを表示します。|
 |`?rmIksm`|acc_name|指定されたアカウントの情報を削除します。|
-|`?showIksmAcc`|なし|登録されているnintendoアカウント一覧を表示します。|
+|`?showIksm`|なし|登録されているnintendoアカウント一覧を表示します。|
 
 ## Botがうまく動かない
 
@@ -124,7 +123,7 @@ Herokuを開いて、Open appの横のMore->view logsをクリック。そこで
 <img height="300px" src="img/heroku_menu_more.png"/>
 
 同じIPアドレスから短時間に何度もtokenの取得を行おうとした場合、spamとみなされて、しばらくiksm sessionの取得が出来なくなる可能性があります。
-logには _This access has been administratively prohibited by the site operator_ と表示されます。IPアドレスを変更することで解決できます。
+logには _This access has been administratively prohibited by the site operator_ と表示されます。IPアドレスを変更する、あるいはしばらく時間をおくことで解決できます。
 
 ## Botを自分好みに改造したくなったら
 [Discord Bot 最速チュートリアル【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)を参考にしてください。  

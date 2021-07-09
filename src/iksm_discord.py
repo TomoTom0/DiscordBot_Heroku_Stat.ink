@@ -24,51 +24,73 @@ sys.path.append(f"{os.path.dirname(__file__)}/../splatnet2statink")  # noqa
 # these version information will be obtained in excuting functions
 #A_VERSION = "1.5.11"
 #NSO_VERSION = "1.11.0"
+GLOBAL_versions_default = {"NSO": "1.11.0", "A": "1.5.11", "date": 0}
+GLOBAL_versions_saved = GLOBAL_versions_default
 
 session = requests.Session()
 
 splat_path = basic.const_paths["splat_dir"]
 tmp_dir = basic.const_paths["tmp_dir"]
 
-## ------------/ obtain version info from GitHub /------------
-def obtainGitHubContent(user:str, repo:str, path:str):
+# # ------------/ obtain version info from GitHub /------------
+
+def obtainGitHubContent(user: str, repo: str, path: str):
     gitHubToken = os.environ.get("GitHubToken", False)
-    headers_base = { "Accept": "application/vnd.github.v3+json" } 
-    headers_auth= {} if gitHubToken is False else { "Authorization": f"Token {gitHubToken}" }
+    headers_base = {"Accept": "application/vnd.github.v3+json"}
+    headers_auth = {} if gitHubToken is False else {
+        "Authorization": f"Token {gitHubToken}"}
     headers_base.update(headers_auth)
     git_content_url = f"https://api.github.com/repos/{user}/{repo}/contents/{path}"
-    res=requests.request(url=git_content_url, method="get", headers=headers_base)
-    content=res.json()["content"]
+    res = requests.request(url=git_content_url,
+                           method="get", headers=headers_base)
+    content = res.json()["content"]
     return base64.b64decode(content).decode()
 
+
 def obtainVersions():
-    versions={}
-    versions_default={"NSO":"1.11.0", "A":"1.5.11"}
+    # update check
+    global GLOBAL_versions_saved
+    time_now = time.time()
+    old_versions = GLOBAL_versions_saved
+
+    if time_now - old_versions["date"] < 6 * 3600:
+        return old_versions
+
+    versions = {"date": time_now}
+    versions_default = GLOBAL_versions_default
     try:
         # NSO_VERSION
-        repoInfo_iksm={"user":"frozenpandaman", "repo":"splatnet2statink", "path":"iksm.py"}
-        iksm_content=obtainGitHubContent(**repoInfo_iksm)
-        NSO_lines=re.findall(r"(?<=OnlineLounge).*\d+\.\d+\.\d.*(?=NASDKAPI)", iksm_content)
-        versions["NSO"]=re.findall(r"\d+\.\d+\.\d", NSO_lines[0])[0] if len(NSO_lines)==0 else versions_default["NSO"]
+        repoInfo_iksm = {"user": "frozenpandaman",
+                         "repo": "splatnet2statink", "path": "iksm.py"}
+        iksm_content = obtainGitHubContent(**repoInfo_iksm)
+        NSO_lines = re.findall(
+            r"(?<=OnlineLounge).*\d+\.\d+\.\d.*(?=NASDKAPI)", iksm_content)
+        versions["NSO"] = re.findall(
+            r"\d+\.\d+\.\d", NSO_lines[0])[0] if len(NSO_lines) == 0 else versions_default["NSO"]
 
         # A_VERSION
-        repoInfo_splat={"user":"frozenpandaman", "repo":"splatnet2statink", "path":"splatnet2statink.py"}
-        splat_content=obtainGitHubContent(**repoInfo_splat)
-        A_lines=re.findall(r"(?<=A_VERSION).*\d+\.\d+\.\d+.*", splat_content)
-        versions["A"]=re.findall(r"\d+\.\d+\.\d", NSO_lines[0])[0] if len(A_lines)==0 else versions_default["A"]
+        repoInfo_splat = {"user": "frozenpandaman",
+                          "repo": "splatnet2statink", "path": "splatnet2statink.py"}
+        splat_content = obtainGitHubContent(**repoInfo_splat)
+        A_lines = re.findall(r"(?<=A_VERSION).*\d+\.\d+\.\d+.*", splat_content)
+        versions["A"] = re.findall(
+            r"\d+\.\d+\.\d", NSO_lines[0])[0] if len(A_lines) == 0 else versions_default["A"]
     except Exception as e:
-        versions=versions_default
+        versions = versions_default
 
+    GLOBAL_versions_saved = versions
     return versions
 
-## ------------/ discord functions /-----------------
+# # ------------/ discord functions /-----------------
 
-## make config file
+# # make config file
+
 async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_session=False):
     # NSO_VERSION, A_VERSION
-    versions=obtainVersions()
-    NSO_VERSION=versions["NSO"]
-    A_VERSION=versions["A"]
+    versions = obtainVersions()
+    NSO_VERSION = versions["NSO"]
+    A_VERSION = versions["A"]
+
     USER_LANG = "ja-JP"
 
     try:
@@ -77,27 +99,28 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
         ctx.channel.send(
             f"エラーが発生しました。{e}\nもう一度`?startIksm <API KEY>`からやり直してください。")
         return
-    print_content = f"リンクをクリックしてログインし, 「この人にする」ボタンを長押し(PCなら右クリック)してリンク先のURLをコピーしてください。**注意: ボタンをそのままクリックするのではありません。**"
+    print_content = f"リンクをクリックしてログインし、「この人にする」ボタンを長押し(PCなら右クリック)してリンク先のURLをコピーしてください。"+\
+        "**注意: ボタンをそのままクリックするのではありません。**\n"+post_login+"\n"+\
+            "URLをペーストしてください。キャンセルする場合は`cancel`と入力してください。"
     await ctx.channel.send(print_content)
-    await ctx.channel.send(post_login)
     new_token = ""
     while new_token == "":
         try:
-            await ctx.channel.send("URLをペーストしてください。キャンセルする場合は`cancel`と入力してください。")
-
             def check_url(msg):
                 authorIsValid = (msg.author.id == ctx.message.author.id)
-                contentIsValid = msg.content.startswith("npf71b963c1b7b6d119://") or msg.content == "cancel"
+                contentIsValid = msg.content.startswith(
+                    "npf71b963c1b7b6d119://") or msg.content == "cancel"
                 return authorIsValid and contentIsValid
             try:
                 input_url = await ctx.bot.wait_for("message", check=check_url, timeout=600)
             except asyncio.TimeoutError:
-                await ctx.channel.send("Timeoutです。もう一度`?startIksm <API KEY>`からやり直してください。")
+                await ctx.channel.send("Timeoutです。\nもう一度`?startIksm <API KEY>`からやり直してください。")
                 return
             if input_url.content == "cancel":
                 await ctx.channel.send("Canceled.")
                 return
-            session_token_code_tmp = re.findall(r"(?<=session_token_code=)[^&]*(?=&)", input_url.content)
+            session_token_code_tmp = re.findall(
+                r"(?<=session_token_code=)[^&]*(?=&)", input_url.content)
             if len(session_token_code_tmp) == 0:
                 await ctx.channel.send("不適切なURLです。\nもう一度コピーしてきてください。")
                 continue
@@ -109,27 +132,94 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
         except KeyError:  # session_token not found
             await ctx.channel.send("\niksm_sessionが見つかりませんでした。Nintendo Accountからログアウトし、もう一度はじめからやり直してください。")
 
+    await ctx.channel.send("操作中です。しばらくお待ちください。")
     acc_name, new_cookie = await get_cookie_discord(
         new_token, USER_LANG, versions, ctx.channel)
 
     config_data = {"api_key": API_KEY, "cookie": new_cookie,
                    "user_lang": USER_LANG, "session_token": new_token}
     # save config
+    time_10=format(int(time.time()), "010")
     if basic.IsHeroku:  # for Heroku
         before_config_tmp = json.loads(os.getenv("iksm_configs", "{}"))
         before_config_jsons = eval(before_config_tmp) if type(
             before_config_tmp) == str else before_config_tmp
+        new_config={f"{acc_name}_{time_10}": config_data}
         try:
-            before_config_jsons.update({acc_name: config_data})
+            before_config_jsons.update(new_config)
         except:
-            before_config_jsons = {acc_name: config_data}
+            before_config_jsons = new_config
         json_configs = json.dumps(before_config_jsons)
         basic.update_env({"iksm_configs": json.dumps(json_configs)})
     else:  # for not Heroku
         os.makedirs(tmp_dir, exist_ok=True)
-        with open(f"{tmp_dir}/{acc_name}_config.txt", "w") as f:
+        with open(f"{tmp_dir}/{acc_name}_{time_10}_config.txt", "w") as f:
             f.write(json.dumps(config_data, indent=4,
                                sort_keys=True, separators=(',', ': ')))
+    return acc_name
+
+# #-----------/ functions about configs /-----------------
+
+def decomposeKey(key=""):
+    return {
+        "name":re.sub(r"_\d{10}$", "", key),
+        "key":key,
+        "time":(re.findall(r"(?<=_)\d{10}$", key)+[0])[0]
+    }
+
+
+def obtainAccNames():
+    name_keys=[]
+    if basic.IsHeroku is True: # for Heroku
+        before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
+        before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
+        name_keys=list(before_config_jsons.keys())
+    else:
+        name_keys=[path.replace("_config.txt", "") for path in os.listdir(tmp_dir) if path.endswith("_config.txt")]
+    return [decomposeKey(s) for s in name_keys]
+
+
+def obtainAccInfo(acc_name_key:str):
+    if basic.IsHeroku:
+        before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
+        before_config_jsons=eval(before_config_tmp) if type(before_config_tmp)==str else before_config_tmp
+        json_file=before_config_jsons[acc_name_key]
+    else:
+        with open(f"{tmp_dir}/{acc_name_key}_config.txt", "r") as f:
+            json_file=json.loads(f.read())
+    return json_file
+
+def obtainDate(timestamp=0):
+    timestamp_int=int(timestamp) if f"{timestamp}".isdecimal() else 0
+    if timestamp_int==0:
+        return ""
+    else:
+        date_tmp=datetime.datetime.fromtimestamp(timestamp_int)
+        return date_tmp.date().isoformat()
+
+
+async def checkAcc(ctx:commands.Context, acc_name:str):
+    acc_name_sets = obtainAccNames()
+    valid_name_keys=[s for s in acc_name_sets if s["name"]==acc_name ]
+    if len(valid_name_keys)==1:
+        return valid_name_keys[0]
+    elif len(valid_name_keys)>1:
+
+        content=f"There are {len(valid_name_keys)} accounts with the same name, `{acc_name}`.\n"+\
+            f"Select with the number.(1-{len(valid_name_keys)})\n"+\
+            "\t"+"\n\t".join([ "**{}**: `{}` on {}".format(num+1, s["name"], obtainDate(s["key"])) for num, s in enumerate(valid_name_keys)])
+        await ctx.channel.send(content)
+
+        def check_msg(msg):
+            authorIsValid = (msg.author.id == ctx.author.id)
+            contentIsValid= msg.content.isdecimal() and int(msg.content) in range(1, len(valid_name_keys)+1)
+            return authorIsValid and contentIsValid
+        input_msg=await ctx.bot.wait_for("message", check=check_msg)
+        return valid_name_keys[int(input_msg.content)-1]
+    else: # len(valid_name_keys)==0
+        await ctx.channel.send(f"`{acc_name}` is not registered.")
+        return {"name":""}
+
 
 
 async def auto_upload_iksm():
@@ -181,13 +271,15 @@ async def autoUploadCycle(next_time=900):
         print(f"Next Check Time : in {tmp_next_time} sec")
         await asyncio.sleep(tmp_next_time)
 
-## -----------/ remake functions for discord_bot /-----------
+# # -----------/ remake functions for discord_bot /-----------
 
-### log_in_discord
+# ## log_in_discord
+
+
 def log_in_discord(versions, ctx_channel: commands.Context.channel):
     '''Logs in to a Nintendo Account and returns a session_token.'''
-    NSO_VERSION=versions["NSO"]
-    A_VERSION=versions["A"]
+    NSO_VERSION = versions["NSO"]
+    A_VERSION = versions["A"]
 
     version = A_VERSION
 
@@ -227,12 +319,14 @@ def log_in_discord(versions, ctx_channel: commands.Context.channel):
 
     return post_login, auth_code_verifier
 
-###  get_cookie
+# ##  get_cookie
+
+
 async def get_cookie_discord(session_token, userLang, versions, ctx_channel: commands.Context.channel):
     '''Returns a new cookie provided the session_token.'''
 
-    NSO_VERSION=versions["NSO"]
-    A_VERSION=versions["A"]
+    NSO_VERSION = versions["NSO"]
+    A_VERSION = versions["A"]
 
     version = A_VERSION
     timestamp = int(time.time())
@@ -313,7 +407,7 @@ async def get_cookie_discord(session_token, userLang, versions, ctx_channel: com
             'naBirthday': user_info["birthday"],
             'language':   user_info["language"]
         }
-    #except SystemExit:
+    # except SystemExit:
     #    return -1
     except:
         await ctx_channel.send(f"Error(s) from Nintendo")
@@ -330,8 +424,8 @@ async def get_cookie_discord(session_token, userLang, versions, ctx_channel: com
         idToken = splatoon_token["result"]["webApiServerCredential"]["accessToken"]
         flapg_app = await call_flapg_api_discord(idToken, guid, timestamp, "app", A_VERSION, ctx_channel)
     except:
-        await ctx_channel.send("Error from Nintendo (in Account/Login step):" +\
-                         json.dumps(splatoon_token, indent=2))
+        await ctx_channel.send("Error from Nintendo (in Account/Login step):" +
+                               json.dumps(splatoon_token, indent=2))
         return
 
     # get splatoon access token
@@ -349,8 +443,8 @@ async def get_cookie_discord(session_token, userLang, versions, ctx_channel: com
             'Accept-Encoding':  'gzip'
         }
     except:
-        await ctx_channel.send(f"Error from Nintendo (in Account/Login step):"+\
-		json.dumps(splatoon_token, indent=2))
+        await ctx_channel.send(f"Error from Nintendo (in Account/Login step):" +
+                               json.dumps(splatoon_token, indent=2))
         return
 
     body = {}
@@ -384,8 +478,8 @@ async def get_cookie_discord(session_token, userLang, versions, ctx_channel: com
             'X-Requested-With':        'com.nintendo.znca'
         }
     except:
-        await ctx_channel.send("Error from Nintendo (in Game/GetWebServiceToken step):" +\
-                         json.dumps(splatoon_access_token, indent=2))
+        await ctx_channel.send("Error from Nintendo (in Game/GetWebServiceToken step):" +
+                               json.dumps(splatoon_access_token, indent=2))
         return
 
     url = "https://app.splatoon2.nintendo.net/?lang={}".format(userLang)
@@ -393,8 +487,11 @@ async def get_cookie_discord(session_token, userLang, versions, ctx_channel: com
 
     return nickname, r.cookies["iksm_session"]
 
-### get_session_token
-def get_session_token_discord(session_token_code, auth_code_verifier, NSO_VERSION): # use for discord
+# ## get_session_token
+
+
+# use for discord
+def get_session_token_discord(session_token_code, auth_code_verifier, NSO_VERSION):
     '''Helper function for log_in().'''
 
     app_head = {
@@ -418,12 +515,16 @@ def get_session_token_discord(session_token_code, auth_code_verifier, NSO_VERSIO
     r = session.post(url, headers=app_head, data=body)
     return json.loads(r.text)["session_token"]
 
-### hash_from_s2s
-async def get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_channel: commands.Context.channel): # use for discord
+# ## hash_from_s2s
+
+
+# use for discord
+async def get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_channel: commands.Context.channel):
     '''Passes an id_token and timestamp to the s2s API and fetches the resultant hash from the response.'''
 
     # check to make sure we're allowed to contact the API. stop spamming my web server pls
     """config_data={}
+
 
 	try:
 		with open(config_path, "r") as f:
@@ -439,7 +540,7 @@ async def get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_chan
     try:
         api_app_head = {'User-Agent': "splatnet2statink/{}".format(A_VERSION)}
         api_body = {'naIdToken': id_token, 'timestamp': timestamp}
-        url="https://elifessler.com/s2s/api/gen2"
+        url = "https://elifessler.com/s2s/api/gen2"
         api_response = requests.post(
             url, headers=api_app_head, data=api_body)
         #print(api_response.ok, api_response.content)
@@ -447,10 +548,10 @@ async def get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_chan
             print(api_response.text)
             await ctx_channel.send(api_response.text["error"])
             return ""
-        #print(api_response.text)
+        # print(api_response.text)
         return json.loads(api_response.text)["hash"]
     except:
-        error_message="Error from the splatnet2statink API"
+        error_message = "Error from the splatnet2statink API"
         print(error_message)
         await ctx_channel.send(error_message)
 
@@ -471,10 +572,11 @@ async def get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_chan
 		config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
 		config_file.close()
 """
-        #sys.exit(1)
+        # sys.exit(1)
 
-### call_flapg_api
-async def call_flapg_api_discord(id_token, guid, timestamp, type, A_VERSION, ctx_channel: commands.Context.channel): # use for discord
+# ## call_flapg_api
+
+async def call_flapg_api_discord(id_token, guid, timestamp, type, A_VERSION, ctx_channel: commands.Context.channel):  # use for discord
     '''Passes in headers to the flapg API (Android emulator) and fetches the response.'''
 
     try:
@@ -482,29 +584,28 @@ async def call_flapg_api_discord(id_token, guid, timestamp, type, A_VERSION, ctx
             'x-token': id_token,
             'x-time':  str(timestamp),
             'x-guid':  guid,
-            'x-hash':  await get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_channel),
+            'x-hash': await get_hash_from_s2s_api_discord(id_token, timestamp, A_VERSION, ctx_channel),
             'x-ver':   '3',
             'x-iid':   type
         }
         api_response = requests.get(
             "https://flapg.com/ika2/api/login?public", headers=api_app_head)
-        #print(api_response.text)
+        # print(api_response.text)
         f = json.loads(api_response.text)["result"]
         return f
     except Exception as e:
         try:  # if api_response never gets set
-            error_message=""
+            error_message = ""
             if api_response.text:
-                error_message=u"Error from the flapg API:\n{}".format(json.dumps(
+                error_message = u"Error from the flapg API:\n{}".format(json.dumps(
                     json.loads(api_response.text), indent=2, ensure_ascii=False))
             elif api_response.status_code == requests.codes.not_found:
-                error_message="Error from the flapg API: Error 404 (offline or incorrect headers)."
+                error_message = "Error from the flapg API: Error 404 (offline or incorrect headers)."
             else:
-                error_message="Error from the flapg API: Error {}.".format(api_response.status_code)
+                error_message = "Error from the flapg API: Error {}.".format(
+                    api_response.status_code)
         except:
             pass
         print(error_message)
-        await ctx_channel.send(error_message)
         raise(RuntimeError(error_message))
-        #sys.exit(1)
-
+        # sys.exit(1)
