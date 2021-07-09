@@ -90,6 +90,7 @@ async def make_config_discord(API_KEY, conifg_dir, ctx: commands.Context, print_
     versions = obtainVersions()
     NSO_VERSION = versions["NSO"]
     A_VERSION = versions["A"]
+
     USER_LANG = "ja-JP"
 
     try:
