@@ -16,6 +16,7 @@ import random
 import string
 import datetime
 import asyncio
+from distutils.version import StrictVersion
 
 import basic
 sys.path.append(f"{os.path.dirname(__file__)}/../splatnet2statink")  # noqa
@@ -60,13 +61,20 @@ def obtainVersions():
     versions_default = GLOBAL_versions_default
     try:
         # NSO_VERSION
-        repoInfo_iksm = {"user": "frozenpandaman",
+        # from Ninendo Home page
+        url="https://www.nintendo.co.jp/support/app/nintendo_switch_online_app/index.html"
+        res=requests.get(url)
+        NSO_version_lines=re.findall(r"Ver.\s*\d+\.\d+\.\d+", res.text)
+        NSO_versions=[re.findall(r"\d+\.\d+\.\d+", s)[0] for s in NSO_version_lines]
+        versions["NSO"]=sorted(NSO_versions, key=StrictVersion)[-1]
+
+        """repoInfo_iksm = {"user": "frozenpandaman",
                          "repo": "splatnet2statink", "path": "iksm.py"}
         iksm_content = obtainGitHubContent(**repoInfo_iksm)
         NSO_lines = re.findall(
             r"(?<=OnlineLounge).*\d+\.\d+\.\d.*(?=NASDKAPI)", iksm_content)
         versions["NSO"] = re.findall(
-            r"\d+\.\d+\.\d", NSO_lines[0])[0] if len(NSO_lines) == 0 else versions_default["NSO"]
+            r"\d+\.\d+\.\d", NSO_lines[0])[0] if len(NSO_lines) == 0 else versions_default["NSO"]"""
 
         # A_VERSION
         repoInfo_splat = {"user": "frozenpandaman",
@@ -74,7 +82,7 @@ def obtainVersions():
         splat_content = obtainGitHubContent(**repoInfo_splat)
         A_lines = re.findall(r"(?<=A_VERSION).*\d+\.\d+\.\d+.*", splat_content)
         versions["A"] = re.findall(
-            r"\d+\.\d+\.\d", NSO_lines[0])[0] if len(A_lines) == 0 else versions_default["A"]
+            r"\d+\.\d+\.\d", A_lines[0])[0] if len(A_lines) == 0 else versions_default["A"]
     except Exception as e:
         versions = versions_default
 
