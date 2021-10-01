@@ -102,6 +102,9 @@ async def auto_upload_iksm():
                 json.dump(v, f)
             subprocess.run(
                 ["python3", f"{splat_path}/splatnet2statink.py", "-r"])
+            with open(f"{GLOBAL_tmp_dir}/config.txt") as f:
+                v=json.load(f)
+            before_config_jsons[acc_name]=v
     else:  # for not Heroku
         config_names = [path for path in os.listdir(
             GLOBAL_tmp_dir) if path.endswith("_config.txt")]
@@ -114,6 +117,7 @@ async def auto_upload_iksm():
                 continue
             subprocess.run(
                 ["python3", f"{splat_path}/splatnet2statink.py", "-r"])
+            shutil.copy(f"{GLOBAL_tmp_dir}/config.txt", f"{GLOBAL_tmp_dir}/{config_name}")
         # if len(config_names)!=0:
         #	os.remove(f"{GLOBAL_tmp_dir}/config.txt")
 
@@ -149,7 +153,7 @@ class makeConfig():
         self.config_dir=GLOBAL_tmp_dir
 
     # ## obtain versions
-    def obtainGitHubContent(self, user: str, repo: str, path: str):
+    """def obtainGitHubContent(self, user: str, repo: str, path: str):
         gitHubToken = os.environ.get("GitHubToken", False)
         headers_base = {"Accept": "application/vnd.github.v3+json"}
         headers_auth = {} if gitHubToken is False else {
@@ -159,7 +163,7 @@ class makeConfig():
         res = requests.request(url=git_content_url,
                                method="get", headers=headers_base)
         content = res.json()["content"]
-        return base64.b64decode(content).decode()
+        return base64.b64decode(content).decode()"""
 
 
     def obtainVersions(self):
@@ -185,10 +189,15 @@ class makeConfig():
             # A_VERSION
             repoInfo_splat = {"user": "frozenpandaman",
                               "repo": "splatnet2statink", "path": "splatnet2statink.py"}
-            splat_content = self.obtainGitHubContent(**repoInfo_splat)
-            A_lines = re.findall(r"(?<=A_VERSION).*\d+\.\d+\.\d+.*", splat_content)
+            #splat_content = self.obtainGitHubContent(**repoInfo_splat)
+            #A_lines = re.findall(r"(?<=A_VERSION).*\d+\.\d+\.\d+.*", splat_content)
+            def obtainGitHubUrl(user, repo, path):
+                return f"https://github.com/{user}/{repo}/blob/master/{path}"
+            gitHubUrl=obtainGitHubUrl(**repoInfo_splat)
+            res_splat=requests.get(gitHubUrl)
+            A_lines=re.findall(r"A_VERSION.*&quot;\d+\.\d+\.\d+&quot;", res_splat.text)
             versions["A"] = re.findall(
-                r"\d+\.\d+\.\d", A_lines[0])[0] if len(A_lines) == 0 else versions_default["A"]
+                r"\d+\.\d+\.\d+", A_lines[0])[0] if len(A_lines) > 0 else versions_default["A"]
         except Exception as e:
             versions = versions_default
 
@@ -550,7 +559,7 @@ class makeConfig():
         A_VERSION=self.versions["A"]
         x_hash=await self.get_hash_from_s2s_api_discord(id_token, timestamp)
         if x_hash is None:
-            self.send_msg("Errors from splatnet2statink API")
+            await self.send_msg("Errors from splatnet2statink API")
             return None
 
         url="https://flapg.com/ika2/api/login?public"

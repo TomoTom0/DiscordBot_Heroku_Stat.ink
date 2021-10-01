@@ -12,11 +12,57 @@ import time
 import random
 import string
 
-
 session = requests.Session()
-A_VERSION = "1.5.11"
+
+GLOBAL_versions_default = {"NSO": "1.11.0", "A": "1.5.11", "date": 0}
+GLOBAL_versions_saved = GLOBAL_versions_default
+
+def obtainVersions():
+    global GLOBAL_versions_saved
+    # update check
+    time_now = time.time()
+    old_versions = GLOBAL_versions_saved
+
+    if time_now - old_versions["date"] < 6 * 3600:
+        return old_versions
+
+    versions = {"date": time_now}
+    print(versions)
+    versions_default = GLOBAL_versions_default
+    try:
+        # NSO_VERSION
+        # from Ninendo Home page
+        url="https://www.nintendo.co.jp/support/app/nintendo_switch_online_app/index.html"
+        res=requests.get(url)
+        NSO_version_lines=re.findall(r"Ver.\s*\d+\.\d+\.\d+", res.text)+[versions_default["NSO"]]
+        NSO_versions=[re.findall(r"\d+\.\d+\.\d+", s)[0] for s in NSO_version_lines]
+        versions["NSO"]=sorted(NSO_versions, key=StrictVersion)[-1]
+        print(versions)
+
+        # A_VERSION
+        repoInfo_splat = {"user": "frozenpandaman",
+                            "repo": "splatnet2statink", "path": "splatnet2statink.py"}
+        #splat_content = self.obtainGitHubContent(**repoInfo_splat)
+        #A_lines = re.findall(r"(?<=A_VERSION).*\d+\.\d+\.\d+.*", splat_content)
+        def obtainGitHubUrl(user, repo, path):
+            return f"https://github.com/{user}/{repo}/blob/master/{path}"
+        gitHubUrl=obtainGitHubUrl(**repoInfo_splat)
+        res_splat=requests.get(gitHubUrl)
+        print(res_splat)
+        A_lines=re.findall(r"A_VERSION.*&quot;\d+\.\d+\.\d+&quot;", res_splat.text)
+        print(A_lines)
+        versions["A"] = re.findall(
+            r"\d+\.\d+\.\d+", A_lines[0])[0] if len(A_lines) > 0 else versions_default["A"]
+    except Exception as e:
+        versions = versions_default
+
+    GLOBAL_versions_saved = versions
+    return versions
+
+versions=obtainVersions()
+A_VERSION = versions["A"]
 version = A_VERSION
-NSO_VERSION = "1.11.0"
+NSO_VERSION = versions["NSO"]
 
 # ----------- change config_path ------------
 config_path = "/tmp/config.txt" if os.getenv(

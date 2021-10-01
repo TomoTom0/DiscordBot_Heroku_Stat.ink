@@ -89,7 +89,12 @@ class Splat(commands.Cog):
             return
         # try:
         try:
-            acc_name = await iksm_discord.make_config_discord(STAT_INK_API_KEY, config_dir, ctx)
+            print(STAT_INK_API_KEY)
+            makeConfig=iksm_discord.makeConfig()
+            acc_name = await makeConfig.make_config_discord(STAT_INK_API_KEY, ctx)
+            if acc_name is None:
+                await ctx.send("エラーが発生しました。詳細はbotのログを確認してください。")
+                return
         except Exception as e:
             error_message = f"エラーが発生しました。\n{traceback.format_exc()}"
             print(error_message)
