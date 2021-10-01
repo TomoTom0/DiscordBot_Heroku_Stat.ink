@@ -23,77 +23,86 @@ GLOBAL_versions_default = {"NSO": "1.11.0", "A": "1.5.11", "date": 0}
 GLOBAL_versions_saved = GLOBAL_versions_default
 GLOBAL_splat_dir = basic.const_paths["splat_dir"]
 GLOBAL_tmp_dir = basic.const_paths["tmp_dir"]
-GLOBAL_isHeroku=basic.IsHeroku
+GLOBAL_isHeroku = basic.IsHeroku
 
 # # functions
 
+
 def decomposeKey(key=""):
     return {
-        "name":re.sub(r"_\d{10}$", "", key),
-        "key":key,
-        "time":(re.findall(r"(?<=_)\d{10}$", key)+[0])[0]
+        "name": re.sub(r"_\d{10}$", "", key),
+        "key": key,
+        "time": (re.findall(r"(?<=_)\d{10}$", key)+[0])[0]
     }
 
 
 def obtainAccNames():
-    name_keys=[]
-    if GLOBAL_isHeroku is True: # for Heroku
-        before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
-        before_config_jsons=eval(before_config_tmp) if isinstance(before_config_tmp, str) else before_config_tmp
-        name_keys=list(before_config_jsons.keys())
+    name_keys = []
+    if GLOBAL_isHeroku is True:  # for Heroku
+        before_config_tmp = json.loads(os.getenv("iksm_configs", "{}"))
+        before_config_jsons = eval(before_config_tmp) if isinstance(
+            before_config_tmp, str) else before_config_tmp
+        name_keys = list(before_config_jsons.keys())
     else:
-        name_keys=[path.replace("_config.txt", "") for path in os.listdir(GLOBAL_tmp_dir) if path.endswith("_config.txt")]
+        name_keys = [path.replace("_config.txt", "") for path in os.listdir(
+            GLOBAL_tmp_dir) if path.endswith("_config.txt")]
     return [decomposeKey(s) for s in name_keys]
 
 
-def obtainAccInfo(acc_name_key:str):
+def obtainAccInfo(acc_name_key: str):
     if GLOBAL_isHeroku:
-        before_config_tmp=json.loads(os.getenv("iksm_configs", "{}"))
-        before_config_jsons=eval(before_config_tmp) if isinstance(before_config_tmp, str) else before_config_tmp
-        json_file=before_config_jsons[acc_name_key]
+        before_config_tmp = json.loads(os.getenv("iksm_configs", "{}"))
+        before_config_jsons = eval(before_config_tmp) if isinstance(
+            before_config_tmp, str) else before_config_tmp
+        json_file = before_config_jsons[acc_name_key]
     else:
         with open(f"{GLOBAL_tmp_dir}/{acc_name_key}_config.txt", "r") as f:
-            json_file=json.loads(f.read())
+            json_file = json.loads(f.read())
     return json_file
 
+
 def obtainDate(timestamp=0):
-    timestamp_int=int(timestamp) if f"{timestamp}".isdecimal() else 0
-    if timestamp_int==0:
+    timestamp_int = int(timestamp) if f"{timestamp}".isdecimal() else 0
+    if timestamp_int == 0:
         return ""
     else:
-        date_tmp=datetime.datetime.fromtimestamp(timestamp_int)
+        date_tmp = datetime.datetime.fromtimestamp(timestamp_int)
         return date_tmp.date().isoformat()
 
 
-async def checkAcc(ctx:commands.Context, acc_name:str):
+async def checkAcc(ctx: commands.Context, acc_name: str):
     acc_name_sets = obtainAccNames()
-    valid_name_keys=[s for s in acc_name_sets if s["name"]==acc_name ]
-    if len(valid_name_keys)==1:
+    valid_name_keys = [s for s in acc_name_sets if s["name"] == acc_name]
+    if len(valid_name_keys) == 1:
         return valid_name_keys[0]
-    elif len(valid_name_keys)>1:
+    elif len(valid_name_keys) > 1:
 
-        content=f"There are {len(valid_name_keys)} accounts with the same name, `{acc_name}`.\n"+\
-            f"Select with the number.(1-{len(valid_name_keys)})\n"+\
-            "\t"+"\n\t".join([ "**{}**: `{}` on {}".format(num+1, s["name"], obtainDate(s["key"])) for num, s in enumerate(valid_name_keys)])
+        content = f"There are {len(valid_name_keys)} accounts with the same name, `{acc_name}`.\n" +\
+            f"Select with the number.(1-{len(valid_name_keys)})\n" +\
+            "\t"+"\n\t".join(["**{}**: `{}` on {}".format(num+1, s["name"],
+                                                          obtainDate(s["key"])) for num, s in enumerate(valid_name_keys)])
         await ctx.channel.send(content)
 
         def check_msg(msg):
             authorIsValid = (msg.author.id == ctx.author.id)
-            contentIsValid= msg.content.isdecimal() and int(msg.content) in range(1, len(valid_name_keys)+1)
+            contentIsValid = msg.content.isdecimal() and int(
+                msg.content) in range(1, len(valid_name_keys)+1)
             return authorIsValid and contentIsValid
-        input_msg=await ctx.bot.wait_for("message", check=check_msg)
-        input_content=input_msg.content
+        input_msg = await ctx.bot.wait_for("message", check=check_msg)
+        input_content = input_msg.content
         return valid_name_keys[int(input_content)-1]
-    else: # len(valid_name_keys)==0
+    else:  # len(valid_name_keys)==0
         await ctx.channel.send(f"`{acc_name}` is not registered.")
-        return {"name":""}
+        return {"name": ""}
+
 
 async def auto_upload_iksm():
     # auto upload
-    splat_path=GLOBAL_splat_dir
+    splat_path = GLOBAL_splat_dir
     if GLOBAL_isHeroku is True:  # for Heroku
         before_config_tmp = json.loads(os.getenv("iksm_configs", "{}"))
-        before_config_jsons = eval(before_config_tmp) if isinstance(before_config_tmp, str) else before_config_tmp
+        before_config_jsons = eval(before_config_tmp) if isinstance(
+            before_config_tmp, str) else before_config_tmp
         for acc_name, v in before_config_jsons.items():
             if v["api_key"] in ["0"*43, "skip"]:  # API_KEY is not setted
                 continue
@@ -103,13 +112,14 @@ async def auto_upload_iksm():
             subprocess.run(
                 ["python3", f"{splat_path}/splatnet2statink.py", "-r"])
             with open(f"{GLOBAL_tmp_dir}/config.txt") as f:
-                v=json.load(f)
-            before_config_jsons[acc_name]=v
+                v = json.load(f)
+            before_config_jsons[acc_name] = v
     else:  # for not Heroku
         config_names = [path for path in os.listdir(
             GLOBAL_tmp_dir) if path.endswith("_config.txt")]
         for config_name in config_names:
-            shutil.copy(f"{GLOBAL_tmp_dir}/{config_name}", f"{GLOBAL_tmp_dir}/config.txt")
+            shutil.copy(f"{GLOBAL_tmp_dir}/{config_name}",
+                        f"{GLOBAL_tmp_dir}/config.txt")
             with open(f"{GLOBAL_tmp_dir}/config.txt") as f:
                 config_json = json.load(f)
             api_key = config_json["api_key"]
@@ -117,13 +127,14 @@ async def auto_upload_iksm():
                 continue
             subprocess.run(
                 ["python3", f"{splat_path}/splatnet2statink.py", "-r"])
-            shutil.copy(f"{GLOBAL_tmp_dir}/config.txt", f"{GLOBAL_tmp_dir}/{config_name}")
+            shutil.copy(f"{GLOBAL_tmp_dir}/config.txt",
+                        f"{GLOBAL_tmp_dir}/{config_name}")
         # if len(config_names)!=0:
         #	os.remove(f"{GLOBAL_tmp_dir}/config.txt")
 
 
 async def autoUploadCycle(next_time=900):
-    config_dir=GLOBAL_tmp_dir if GLOBAL_isHeroku else GLOBAL_splat_dir
+    config_dir = GLOBAL_tmp_dir if GLOBAL_isHeroku else GLOBAL_splat_dir
     config_path = config_dir+"/config.txt"
     if not os.path.isfile(config_path):
         with open(config_path, "w") as f:
@@ -143,14 +154,16 @@ async def autoUploadCycle(next_time=900):
         await asyncio.sleep(tmp_next_time)
 
 # # ------------/ class /---------------
+
+
 class makeConfig():
     def __init__(self):
         self.versions = self.obtainVersions()
         self.USER_LANG = "ja-JP"
         self.session = requests.Session()
-        self.ctx=None
-        self.isHeroku=GLOBAL_isHeroku
-        self.config_dir=GLOBAL_tmp_dir
+        self.ctx = None
+        self.isHeroku = GLOBAL_isHeroku
+        self.config_dir = GLOBAL_tmp_dir
 
     # ## obtain versions
     """def obtainGitHubContent(self, user: str, repo: str, path: str):
@@ -164,7 +177,6 @@ class makeConfig():
                                method="get", headers=headers_base)
         content = res.json()["content"]
         return base64.b64decode(content).decode()"""
-
 
     def obtainVersions(self):
         global GLOBAL_versions_saved
@@ -180,22 +192,26 @@ class makeConfig():
         try:
             # NSO_VERSION
             # from Ninendo Home page
-            url="https://www.nintendo.co.jp/support/app/nintendo_switch_online_app/index.html"
-            res=requests.get(url)
-            NSO_version_lines=re.findall(r"Ver.\s*\d+\.\d+\.\d+", res.text)+[versions_default["NSO"]]
-            NSO_versions=[re.findall(r"\d+\.\d+\.\d+", s)[0] for s in NSO_version_lines]
-            versions["NSO"]=sorted(NSO_versions, key=StrictVersion)[-1]
+            url = "https://www.nintendo.co.jp/support/app/nintendo_switch_online_app/index.html"
+            res = requests.get(url)
+            NSO_version_lines = re.findall(
+                r"Ver.\s*\d+\.\d+\.\d+", res.text)+[versions_default["NSO"]]
+            NSO_versions = [re.findall(r"\d+\.\d+\.\d+", s)[0]
+                            for s in NSO_version_lines]
+            versions["NSO"] = sorted(NSO_versions, key=StrictVersion)[-1]
 
             # A_VERSION
             repoInfo_splat = {"user": "frozenpandaman",
                               "repo": "splatnet2statink", "path": "splatnet2statink.py"}
             #splat_content = self.obtainGitHubContent(**repoInfo_splat)
             #A_lines = re.findall(r"(?<=A_VERSION).*\d+\.\d+\.\d+.*", splat_content)
+
             def obtainGitHubUrl(user, repo, path):
                 return f"https://github.com/{user}/{repo}/blob/master/{path}"
-            gitHubUrl=obtainGitHubUrl(**repoInfo_splat)
-            res_splat=requests.get(gitHubUrl)
-            A_lines=re.findall(r"A_VERSION.*&quot;\d+\.\d+\.\d+&quot;", res_splat.text)
+            gitHubUrl = obtainGitHubUrl(**repoInfo_splat)
+            res_splat = requests.get(gitHubUrl)
+            A_lines = re.findall(
+                r"A_VERSION.*&quot;\d+\.\d+\.\d+&quot;", res_splat.text)
             versions["A"] = re.findall(
                 r"\d+\.\d+\.\d+", A_lines[0])[0] if len(A_lines) > 0 else versions_default["A"]
         except Exception as e:
@@ -203,9 +219,9 @@ class makeConfig():
 
         GLOBAL_versions_saved = versions
         return versions
-    
+
     async def send_msg(self, content: str, isError=False):
-        ctx=self.ctx
+        ctx = self.ctx
         if isinstance(ctx, commands.Context) and isError is False:
             await ctx.channel.send(content)
         else:
@@ -213,37 +229,38 @@ class makeConfig():
 
     # ## make config
     async def make_config_discord(self, API_KEY, ctx=None, print_session=False):
-        self.ctx=ctx
-        config_dir=self.config_dir
-        userLang=self.USER_LANG
-        NSO_VERSION=self.versions["NSO"]
+        self.ctx = ctx
+        config_dir = self.config_dir
+        userLang = self.USER_LANG
+        NSO_VERSION = self.versions["NSO"]
 
         self.log_in_discord()
-        post_login=self.post_login
-        print_content = f"リンクをクリックしてログインし、「この人にする」ボタンを長押し(PCなら右クリック)してリンク先のURLをコピーしてください。"+\
-            "**注意: ボタンをそのままクリックするのではありません。**\n"+post_login+"\n"+\
-                "URLをペーストしてください。キャンセルする場合は`cancel`と入力してください。"
+        post_login = self.post_login
+        print_content = f"リンクをクリックしてログインし、「この人にする」ボタンを長押し(PCなら右クリック)してリンク先のURLをコピーしてください。" +\
+            "**注意: ボタンをそのままクリックするのではありません。**\n"+post_login+"\n" +\
+            "URLをペーストしてください。キャンセルする場合は`cancel`と入力してください。"
         await self.send_msg(print_content)
 
         while True:
-            def check_content(content:str):
-                contentIsValidUrl= content.startswith("npf71b963c1b7b6d119://") and\
-                        re.findall(r"(?<=session_token_code=)[^&]*(?=&)", content) != []
+            def check_content(content: str):
+                contentIsValidUrl = content.startswith("npf71b963c1b7b6d119://") and\
+                    re.findall(
+                        r"(?<=session_token_code=)[^&]*(?=&)", content) != []
                 contetnIsValidCommand = content in ["cancel"]
                 return contentIsValidUrl or contetnIsValidCommand
             if isinstance(ctx, commands.Context):
                 def check_url(msg):
                     authorIsValid = (msg.author.id == ctx.message.author.id)
-                    contentIsValid=check_content(msg.content)
+                    contentIsValid = check_content(msg.content)
                     return authorIsValid and contentIsValid
                 try:
                     input_url = await ctx.bot.wait_for("message", check=check_url, timeout=600)
-                    input_content=input_url.content
+                    input_content = input_url.content
                 except asyncio.TimeoutError:
                     await self.send_msg("Timeoutです。\nもう一度`?startIksm <API KEY>`からやり直してください。")
                     return
             else:
-                input_content=input()
+                input_content = input()
                 if check_content(input_content) is False:
                     continue
             if input_content == "cancel":
@@ -263,17 +280,18 @@ class makeConfig():
         await self.get_cookie_discord(new_token)
         if self.iksm_session is None:
             return
-        acc_name=self.nickname
-        new_cookie=self.iksm_session
+        acc_name = self.nickname
+        new_cookie = self.iksm_session
 
         config_data = {"api_key": API_KEY, "cookie": new_cookie,
                        "user_lang": userLang, "session_token": new_token}
         # save config
-        time_10=format(int(time.time()), "010")
+        time_10 = format(int(time.time()), "010")
         if self.isHeroku is True:  # for Heroku
             before_config_tmp = json.loads(os.getenv("iksm_configs", "{}"))
-            before_config_jsons = eval(before_config_tmp) if isinstance(before_config_tmp, str) else before_config_tmp
-            new_config={f"{acc_name}_{time_10}": config_data}
+            before_config_jsons = eval(before_config_tmp) if isinstance(
+                before_config_tmp, str) else before_config_tmp
+            new_config = {f"{acc_name}_{time_10}": config_data}
             if isinstance(before_config_jsons, dict):
                 before_config_jsons.update(new_config)
             else:
@@ -296,7 +314,7 @@ class makeConfig():
         NSO_VERSION = self.versions["NSO"]
         A_VERSION = self.versions["A"]
 
-        session=self.session
+        session = self.session
 
         auth_state = base64.urlsafe_b64encode(os.urandom(36))
 
@@ -310,9 +328,9 @@ class makeConfig():
             "Connection":                "keep-alive",
             "Cache-Control":             "max-age=0",
             "Upgrade-Insecure-Requests": "1",
-            "User-Agent":                "Mozilla/5.0 (Linux; Android 7.1.2; Pixel Build/NJH47D; wv) "+\
-                "AppleWebKit/537.36 (KHTML, like Gecko) "+\
-                "Version/4.0 Chrome/59.0.3071.125 Mobile Safari/537.36",
+            "User-Agent":                "Mozilla/5.0 (Linux; Android 7.1.2; Pixel Build/NJH47D; wv) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) " +
+            "Version/4.0 Chrome/59.0.3071.125 Mobile Safari/537.36",
             "Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8n",
             "DNT":                       "1",
             "Accept-Encoding":           "gzip,deflate,br",
@@ -333,9 +351,9 @@ class makeConfig():
         r = session.get(url, headers=app_head, params=body)
 
         self.post_login = r.history[0].url
-        self.auth_code_verifier=auth_code_verifier
+        self.auth_code_verifier = auth_code_verifier
 
-        #return post_login, auth_code_verifier
+        # return post_login, auth_code_verifier
 
     # ##  -------get_cookie------
 
@@ -345,10 +363,10 @@ class makeConfig():
         userLang = self.USER_LANG
         NSO_VERSION = self.versions["NSO"]
         A_VERSION = self.versions["A"]
-        self.iksm_session=None
-        self.nickname=None
+        self.iksm_session = None
+        self.nickname = None
 
-        ### step 1: obtain id_response
+        # step 1: obtain id_response
         timestamp = int(time.time())
         guid = str(uuid.uuid4())
 
@@ -373,20 +391,20 @@ class makeConfig():
 
         r = requests.post(url, headers=app_head, json=body)
         id_response = json.loads(r.text)
-        self.id_response=id_response
+        self.id_response = id_response
 
         # check whether idToken is Valid or not
-        idToken=id_response.get("access_token", None)
+        idToken = id_response.get("access_token", None)
         if idToken is None:
-            content="Not a valid authorization request. Please delete config.txt and try again. \
+            content = "Not a valid authorization request. Please delete config.txt and try again. \
             Error from Nintendo (in api/token step)"
             await self.send_msg(content)
-            content2="id_response is:\n"+json.dumps(id_response, indent=2)
+            content2 = "id_response is:\n"+json.dumps(id_response, indent=2)
             await self.send_msg(content+"\n"+content2, isError=True)
             return
 
         # idToken is Valid
-        ### step2: get user info
+        # step2: get user info
         app_head = {
             "User-Agent":      f"OnlineLounge/{NSO_VERSION} NASDKAPI Android",
             "Accept-Language": userLang,
@@ -400,11 +418,10 @@ class makeConfig():
 
         r = requests.get(url, headers=app_head)
         user_info = json.loads(r.text)
-        self.user_info=user_info
-
+        self.user_info = user_info
 
         # get access token
-        ### step3: splatoon token
+        # step3: splatoon token
         app_head = {
             "Host":             "api-lp1.znc.srv.nintendo.net",
             "Accept-Language":  userLang,
@@ -419,16 +436,16 @@ class makeConfig():
             "Accept-Encoding":  "gzip"
         }
 
-        ### step3-1: flapg api
+        # step3-1: flapg api
         flapg_nso = await self.call_flapg_api_discord(idToken, guid, timestamp, "nso")
 
-        keysAreNotExisting= not all([
+        keysAreNotExisting = not all([
             isinstance(flapg_nso, dict),
             isinstance(user_info, dict)
-            ]) or not all([
-            set(["f", "p1", "p2", "p3"]) <= set(flapg_nso.keys()), 
+        ]) or not all([
+            set(["f", "p1", "p2", "p3"]) <= set(flapg_nso.keys()),
             set(["country", "birthday", "language"]) <= set(user_info.keys())
-            ])
+        ])
         if keysAreNotExisting is True:
             await self.send_msg(f"Error(s) from Nintendo with flapg_api")
             return
@@ -444,18 +461,19 @@ class makeConfig():
         }
         # except SystemExit:
         #    return -1
-        body={"parameter": parameter}
+        body = {"parameter": parameter}
         url = "https://api-lp1.znc.srv.nintendo.net/v1/Account/Login"
         r = requests.post(url, headers=app_head, json=body)
         splatoon_token = json.loads(r.text)
 
-        ### step4: splatoon access token
-        splat_idToken=splatoon_token.get("result", {}).get("webApiServerCredential", {}).get("accessToken", None)
+        # step4: splatoon access token
+        splat_idToken = splatoon_token.get("result", {}).get(
+            "webApiServerCredential", {}).get("accessToken", None)
         if splat_idToken is None:
             await self.send_msg("Error from Nintendo (in Account/Login step):" +
                                 json.dumps(splatoon_token, indent=2))
             return
-        ### step4-1: flapg api
+        # step4-1: flapg api
         flapg_app = await self.call_flapg_api_discord(splat_idToken, guid, timestamp, "app")
 
         # get splatoon access token
@@ -472,7 +490,7 @@ class makeConfig():
             "Accept-Encoding":  "gzip"
         }
 
-        ### step5: splatoon access token
+        # step5: splatoon access token
         if not isinstance(flapg_app, dict) or not set(["f", "p1", "p2", "p3"]) <= set(flapg_app.keys()):
             await self.send_msg(f"Error(s) from Nintendo with flapg_api")
             return
@@ -483,7 +501,7 @@ class makeConfig():
             "timestamp":         flapg_app["p2"],
             "requestId":         flapg_app["p3"]
         }
-        body={"parameter": parameter}
+        body = {"parameter": parameter}
 
         url = "https://api-lp1.znc.srv.nintendo.net/v2/Game/GetWebServiceToken"
 
@@ -491,7 +509,8 @@ class makeConfig():
         splatoon_access_token = json.loads(r.text)
 
         # get cookie
-        X_GameWebToken=splatoon_access_token.get("result", {}).get("accessToken", None)
+        X_GameWebToken = splatoon_access_token.get(
+            "result", {}).get("accessToken", None)
         try:
             app_head = {
                 "Host":                    "app.splatoon2.nintendo.net",
@@ -503,9 +522,9 @@ class makeConfig():
                 "X-IsAnalyticsOptedIn":    "false",
                 "Connection":              "keep-alive",
                 "DNT":                     "0",
-                "User-Agent":              "Mozilla/5.0 (Linux; Android 7.1.2; Pixel Build/NJH47D; wv) "+\
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "+\
-                    "Version/4.0 Chrome/59.0.3071.125 Mobile Safari/537.36",
+                "User-Agent":              "Mozilla/5.0 (Linux; Android 7.1.2; Pixel Build/NJH47D; wv) " +
+                "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Version/4.0 Chrome/59.0.3071.125 Mobile Safari/537.36",
                 "X-Requested-With":        "com.nintendo.znca"
             }
         except:
@@ -517,9 +536,9 @@ class makeConfig():
         r = requests.get(url, headers=app_head)
 
         nickname = user_info.get("nickname", None)
-        iksm_session=r.cookies.get("iksm_session", None)
-        self.iksm_session=iksm_session
-        self.nickname=nickname
+        iksm_session = r.cookies.get("iksm_session", None)
+        self.iksm_session = iksm_session
+        self.nickname = nickname
 
     # ## get_session_token
 
@@ -527,9 +546,9 @@ class makeConfig():
     def get_session_token_discord(self, session_token_code):
         """Helper function for log_in()."""
 
-        NSO_VERSION=self.versions["NSO"]
+        NSO_VERSION = self.versions["NSO"]
         session = self.session
-        auth_code_verifier=self.auth_code_verifier
+        auth_code_verifier = self.auth_code_verifier
 
         app_head = {
             "User-Agent":      f"OnlineLounge/{NSO_VERSION} NASDKAPI Android",
@@ -554,15 +573,16 @@ class makeConfig():
 
     # ## call_flapg_api
 
-    async def call_flapg_api_discord(self, id_token, guid, timestamp, typeIn):  # use for discord
+    # use for discord
+    async def call_flapg_api_discord(self, id_token, guid, timestamp, typeIn):
         """Passes in headers to the flapg API (Android emulator) and fetches the response."""
-        A_VERSION=self.versions["A"]
-        x_hash=await self.get_hash_from_s2s_api_discord(id_token, timestamp)
+        A_VERSION = self.versions["A"]
+        x_hash = await self.get_hash_from_s2s_api_discord(id_token, timestamp)
         if x_hash is None:
             await self.send_msg("Errors from splatnet2statink API")
             return None
 
-        url="https://flapg.com/ika2/api/login?public"
+        url = "https://flapg.com/ika2/api/login?public"
         api_app_head = {
             "x-token": id_token,
             "x-time":  str(timestamp),
@@ -571,25 +591,25 @@ class makeConfig():
             "x-ver":   "3",
             "x-iid":   typeIn
         }
-        #print(api_app_head)
+        # print(api_app_head)
         try:
             api_response = requests.get(url, headers=api_app_head)
             # print(api_response.text)
         except Exception as e:
-            error_message=api_response.text + "\n"+e
+            error_message = api_response.text + "\n"+e
             print(error_message)
             return None
 
         f = json.loads(api_response.text).get("result", None)
-        #print(f)
+        # print(f)
         return f
-        
+
     # ## hash_from_s2s
 
     # use for discord
     async def get_hash_from_s2s_api_discord(self, id_token, timestamp):
         """Passes an id_token and timestamp to the s2s API and fetches the resultant hash from the response."""
-        A_VERSION=self.versions["A"]
+        A_VERSION = self.versions["A"]
 
         # proceed normally
         api_app_head = {"User-Agent": "splatnet2statink/{}".format(A_VERSION)}

@@ -11,6 +11,7 @@ import uuid
 import time
 import random
 import string
+from distutils.version import StrictVersion
 
 session = requests.Session()
 
