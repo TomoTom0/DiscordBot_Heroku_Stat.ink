@@ -1,5 +1,9 @@
 # Discord Bot for Stat.ink X Heroku
 
+[yt_SplatoonDiscordBot](https://github.com/TomoTom0/yt_SplatoonDiscordBot)に移行中です。
+
+----
+
 PC初心者でも、スマホしかない人でも、**stat.inkにSplatoonの戦績を自動アップロードするdiscord bot**を作れるようにしたいと考え、このscriptを書きました。
 
 - Botの起動からやりたい (Heroku利用・初心者はこちら) -> [#事前準備](#事前準備), [#Bot起動まで](#Bot起動まで)
